@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev src/server.ts",
+    "prisma migrate": "prisma migrate dev --name init",
+    "prisma generate": "prisma generate"
   },
   "author": "",
   "license": "ISC",
