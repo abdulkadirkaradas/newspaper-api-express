@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    container_name: newspaper_api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "npx prisma migrate deploy && npm run dev"
+    networks:
+      - newspaperapi
+
+  postgres:
+    image: postgres:15
+    container_name: newspaper_api_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d newspaperapi"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
+    networks:
+      - newspaperapi
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: newspaper_api_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - newspaperapi
+
+networks:
+  newspaperapi:
+    driver: bridge
+
+volumes:
+  postgres_data:
