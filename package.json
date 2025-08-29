@@ -9,11 +9,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^6.14.0",
+    "@prisma/client": "^6.15.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "morgan": "^1.10.1",
+    "prisma": "^6.15.0",
     "tslib": "^2.8.1"
   },
   "devDependencies": {
@@ -21,7 +22,6 @@
     "@types/express": "^5.0.3",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.3.0",
-    "prisma": "^6.14.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"
