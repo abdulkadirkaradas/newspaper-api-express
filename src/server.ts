@@ -1,5 +1,5 @@
 import { config } from "dotenv"
-import { app } from "./src/core/app"
+import { app } from "./core/app"
 
 config();
 
