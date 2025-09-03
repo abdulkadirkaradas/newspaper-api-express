@@ -5,8 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --exit-child src/server.ts",
-    "prisma migrate": "prisma migrate dev --name init",
-    "prisma generate": "prisma generate"
+    "prisma-seed": "ts-node prisma/seed.ts",
+    "prisma-migrate": "prisma migrate dev --name init",
+    "prisma-generate": "prisma generate"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +24,7 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
