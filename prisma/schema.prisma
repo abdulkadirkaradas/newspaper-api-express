@@ -27,7 +27,7 @@ model User {
   lastname             String?
   username             String         @unique
   email                String         @unique
-  emailVerifiedAt      DateTime
+  emailVerifiedAt      DateTime?
   password             String
   blocked              Boolean        @default(false)
   roleId               Int
