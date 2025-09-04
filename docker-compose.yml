@@ -2,19 +2,21 @@ version: "3.8"
 
 services:
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: newspaper_api
     ports:
       - "3000:3000"
     env_file:
       - .env
+    working_dir: /usr/src/app
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./:/usr/src/app
+      # - /usr/src/app/node_modules
     depends_on:
-      postgres:
-        condition: service_healthy
-    command: sh -c "npx prisma migrate deploy && npm run dev"
+      - postgres
+    command: sh -c "npm run dev"
     networks:
       - newspaperapi
 
@@ -30,11 +32,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d newspaperapi"]
-      interval: 5s
-      retries: 5
-      timeout: 5s
     networks:
       - newspaperapi
 
