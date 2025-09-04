@@ -27,14 +27,14 @@ model User {
   lastname             String?
   username             String         @unique
   email                String         @unique
-  emailVerifiedAt      DateTime?
+  emailVerifiedAt      DateTime?      @db.Timestamptz(3)
   password             String
   blocked              Boolean        @default(false)
   roleId               Int
   role                 Role           @relation("UserRole", fields: [roleId], references: [id])
   deleted              Boolean        @default(false)
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
+  createdAt            DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime       @updatedAt @db.Timestamptz(3)
   notifications        Notification[] @relation("UserNotification")
   warnings             Warning[]      @relation("UserWarning")
   news                 News[]         @relation("UserNews")
@@ -54,8 +54,8 @@ model Notification {
   userId    String
   user      User     @relation("UserNotification", fields: [userId], references: [id])
   deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 }
 
 model Warning {
@@ -66,8 +66,8 @@ model Warning {
   userId       String
   user         User     @relation("UserWarning", fields: [userId], references: [id])
   deleted      Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
 }
 
 model Badge {
@@ -78,8 +78,8 @@ model Badge {
   ext         String
   fullpath    String
   deleted     Boolean      @default(false)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt   DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @db.Timestamptz(3)
   userBadges  UserBadges[] @relation("Badge")
 }
 
@@ -88,8 +88,8 @@ model NewsCategory {
   name        String
   description String
   deleted     Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
   news        News[]   @relation("NewsCategory")
 }
 
@@ -108,8 +108,8 @@ model News {
   user                 User           @relation("UserNews", fields: [userId], references: [id])
   category             NewsCategory   @relation("NewsCategory", fields: [categoryId], references: [id])
   deleted              Boolean        @default(false)
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
+  createdAt            DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime       @updatedAt @db.Timestamptz(3)
   images               NewsImage[]    @relation("NewsImage")
   reactions            NewsReaction[] @relation("NewsReaction")
   oppositeNewsSource   OppositeNews[] @relation("SourceNews")
@@ -126,8 +126,8 @@ model NewsImage {
   user      User     @relation("UserNewsImage", fields: [userId], references: [id])
   news      News     @relation("NewsImage", fields: [newsId], references: [id])
   deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 }
 
 model NewsReaction {
@@ -139,8 +139,8 @@ model NewsReaction {
   user      User     @relation("UserNewsReaction", fields: [userId], references: [id])
   news      News     @relation("NewsReaction", fields: [newsId], references: [id])
   deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 }
 
 model OppositeNews {
@@ -154,8 +154,8 @@ model OppositeNews {
   sourceNews     News     @relation("SourceNews", fields: [sourceNewsId], references: [id])
   oppositeNews   News     @relation("OppositeNews", fields: [oppositeNewsId], references: [id])
   deleted        Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(3)
 }
 
 model UserBadges {
@@ -165,8 +165,8 @@ model UserBadges {
   user      User     @relation("UserBadges", fields: [userId], references: [id])
   badge     Badge    @relation("Badge", fields: [badgeId], references: [id])
   deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 }
 
 model Announcement {
@@ -175,6 +175,6 @@ model Announcement {
   content   String
   priority  Int
   deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 }
