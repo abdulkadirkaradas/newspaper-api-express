@@ -4,7 +4,7 @@ import cors from "cors";
 import express, { Application } from "express";
 import morgan from "morgan";
 import webRouter from "../routes/web";
-import { errorHandler } from "./middleware/errorHandler";
+import errorHandler from "./middleware/errorHandler";
 
 export const app: Application = express();
 
