@@ -1,8 +1,8 @@
 FROM node:alpine
 
-RUN apk update && apk upgrade
+RUN apk add --no-cache libc6-compat openssl
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json tsconfig.json ./
 
