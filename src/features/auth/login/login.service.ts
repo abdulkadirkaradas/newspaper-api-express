@@ -1,8 +1,10 @@
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { prisma } from "../../../core/config/database";
-
-const JWT_SECRET = process.env.JWT_SECRET;
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../../core/helper/jwt/generateTokens";
 
 export class LoginService {
   static async login(email: string, password: string) {
@@ -27,16 +29,12 @@ export class LoginService {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error("Invalid credentials");
 
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      JWT_SECRET!,
-      { expiresIn: "1h" }
-    );
-    const { password: _password, ...userWithoutPassword } = user;
-    return { token, user: userWithoutPassword };
-  }
+    const accessToken = generateAccessToken({ id: user.id });
+    const refreshToken = generateRefreshToken({ id: user.id });
 
-  static async verifyToken(token: string) {
-    return jwt.verify(token, JWT_SECRET!);
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
   }
 }
