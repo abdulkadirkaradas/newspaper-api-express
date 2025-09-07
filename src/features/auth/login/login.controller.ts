@@ -1,23 +1,27 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { LoginService } from "./login.service";
 
 export class LoginController {
-  static async login(req: Request, res: Response) {
+  static async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
-      const { token, user } = await LoginService.login(email, password);
-      res.json({ token, user });
+      const { accessToken, refreshToken } = await LoginService.login(
+        email,
+        password
+      );
+
+      res.json({ accessToken, refreshToken });
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      next(err);
     }
   }
 
-  static async user(req: Request, res: Response) {
+  static async user(req: Request, res: Response, next: NextFunction) {
     try {
       const user = (req as any).user;
       res.json({ message: "Authenticated", user });
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      next(err);
     }
   }
 }
