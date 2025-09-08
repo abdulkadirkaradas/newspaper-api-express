@@ -1,5 +1,4 @@
 import * as bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { prisma } from "../../../core/config/database";
 import {
   generateAccessToken,
@@ -36,5 +35,24 @@ export class LoginService {
       accessToken: accessToken,
       refreshToken: refreshToken,
     };
+  }
+
+  static async user(id: string) {
+    return await prisma.user.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        name: true,
+        lastname: true,
+        username: true,
+        email: true,
+        password: false,
+        emailVerifiedAt: true,
+        roleId: true,
+        deleted: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 }
