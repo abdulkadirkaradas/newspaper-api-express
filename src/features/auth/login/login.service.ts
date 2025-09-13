@@ -38,7 +38,7 @@ export class LoginService {
   }
 
   static async user(id: string) {
-    return await prisma.user.findUnique({
+    return await prisma.user.findFirst({
       where: { id: id },
       select: {
         id: true,
