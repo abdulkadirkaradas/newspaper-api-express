@@ -29,7 +29,7 @@ export const checkAuthenticate = (
         req.headers["x-refresh-token"];
 
       if (!refreshToken) {
-        return res.status(403).json({ message: "Refresh token is missing" });
+        return res.status(403).json({ message: "Please provide the refresh token to renew the access token" });
       }
 
       jwt.verify(
