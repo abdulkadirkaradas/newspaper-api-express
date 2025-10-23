@@ -1,10 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { ref } from "process";
-
-interface ExtendedRequest extends Request {
-  user?: any;
-}
+import { ExtendedRequest } from "../../helper/genericTypes";
+import { getUserInformation } from "../../config/database";
 
 const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? "";
 const JWT_SECRET_REFRESH: string = process.env.JWT_SECRET_REFRESH ?? "";
@@ -21,7 +18,7 @@ export const checkAuthenticate = (
     return res.status(401).json({ message: "Unauthorized Action" });
   }
 
-  jwt.verify(token, JWT_SECRET_ACCESS, (error, user) => {
+  jwt.verify(token, JWT_SECRET_ACCESS, async (error, user) => {
     if (error) {
       const refreshToken =
         req.body.refreshToken ||
@@ -29,7 +26,9 @@ export const checkAuthenticate = (
         req.headers["x-refresh-token"];
 
       if (!refreshToken) {
-        return res.status(403).json({ message: "Please provide the refresh token to renew the access token" });
+        return res.status(403).json({
+          message: "Please provide the refresh token to renew the access token",
+        });
       }
 
       jwt.verify(
@@ -52,7 +51,10 @@ export const checkAuthenticate = (
       );
     }
 
-    req.user = user;
+    if (!req.user || !req.user.id || req.user.id !== (user as any).userId) {
+      req.user = await getUserInformation((user as any).userId);
+    }
+
     next();
   });
 };
