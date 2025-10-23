@@ -15,11 +15,11 @@ class NotificationSeed extends Seeder {
   protected generate(): void {
     for (let i = 0; i < this.count; i++) {
       this._data.push({
-        type: faker.word.sample(),
         title: faker.lorem.sentence(),
         content: faker.lorem.paragraph(),
+        priority: faker.number.int({ min: 1, max: 3 }),
         isRead: faker.datatype.boolean(),
-        userId: this.userId ?? faker.string.uuid()
+        userId: this.userId ?? faker.string.uuid(),
       });
     }
   }
