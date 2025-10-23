@@ -1,10 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { prisma } from "../config/database";
 import { verifyRole } from "../helper/userRoles";
-
-interface ExtendedRequest extends Request {
-  user?: any;
-}
+import { ExtendedRequest } from "../helper/genericTypes";
 
 export const checkRole = (role: string[]) => {
   return async (req: ExtendedRequest, res: Response, next: NextFunction) => {

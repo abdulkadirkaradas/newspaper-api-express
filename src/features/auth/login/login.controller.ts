@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginService } from "./login.service";
-interface ExtendedRequest extends Request {
-  user?: any;
-}
+import { ExtendedRequest } from "../../../core/helper/genericTypes";
 
 export class LoginController {
   static async login(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +17,11 @@ export class LoginController {
     }
   }
 
-  static async user(req: ExtendedRequest, res: Response, next: NextFunction) {
+  static async user(
+    req: ExtendedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const decoded = req.user;
       const user = await LoginService.user(decoded?.id);
