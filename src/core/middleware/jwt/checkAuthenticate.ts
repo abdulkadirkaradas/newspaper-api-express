@@ -6,6 +6,10 @@ import { getUserInformation } from "../../config/database";
 const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? "";
 const JWT_SECRET_REFRESH: string = process.env.JWT_SECRET_REFRESH ?? "";
 
+type UserPayload = {
+  userId: string;
+};
+
 export const checkAuthenticate = (
   req: ExtendedRequest,
   res: Response,
@@ -51,8 +55,11 @@ export const checkAuthenticate = (
       );
     }
 
-    if (!req.user || !req.user.id || req.user.id !== (user as any).userId) {
-      req.user = await getUserInformation((user as any).userId);
+    if (
+      (user as UserPayload).userId &&
+      req.user?.id !== (user as UserPayload).userId
+    ) {
+      req.user = await getUserInformation((user as UserPayload).userId);
     }
 
     next();
