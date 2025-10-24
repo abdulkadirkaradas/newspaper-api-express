@@ -1,9 +1,10 @@
-import { checkRole } from '../../core/middleware/checkRole';
-import { NotificationCreateRequestSchema } from './validationScheme';
-import { Router } from 'express';
-import { validateRequest } from '../../core/helper/genericValidation';
+import { checkRole } from "../../core/middleware/checkRole";
+import { NotificationCreateRequestSchema } from "./validationScheme";
+import { Router } from "express";
+import { validateRequest } from "../../core/helper/genericValidation";
 import {
   createNotification,
+  getAllNotifications,
   getNotifications,
   deleteNotification,
   changeNotificationStatus,
@@ -12,6 +13,7 @@ import {
 
 const router = Router();
 
+router.get("/all", [checkRole(["Admin"])], getAllNotifications);
 router.get("/", getNotifications);
 router.post(
   "/",
@@ -21,7 +23,11 @@ router.post(
   ],
   createNotification
 );
-router.put("/:id", [checkRole(["Admin", "Moderator"])], editNotification);
+router.put(
+  "/:id/update",
+  [checkRole(["Admin", "Moderator"])],
+  editNotification
+);
 router.patch(
   "/:id/read",
   [checkRole(["Admin", "Writer"])],

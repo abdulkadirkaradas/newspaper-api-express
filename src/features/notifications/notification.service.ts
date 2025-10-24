@@ -1,4 +1,4 @@
-import { prisma } from '../../core/config/database';
+import { prisma } from "../../core/config/database";
 
 interface Notification {
   userId: string;
@@ -7,18 +7,52 @@ interface Notification {
   priority: number;
 }
 
-export async function getNotifications(id: string | null, role: number | null) {
-  if (!id) {
-    if (role === 1) {
-      return await prisma.notification.findMany({ where: { deleted: false } });
-    } else {
-      return {
-        message: "Only admins can access all notifications. ",
-      };
-    }
+type NotificationDefaultFilter = {
+  userId?: string;
+  id?: string;
+};
+
+type NotificationAdminFilter = NotificationDefaultFilter & {
+  priority?: number;
+  isRead?: boolean;
+  deleted?: boolean;
+};
+
+export async function getAllNotifications(
+  role: number,
+  filter: NotificationAdminFilter
+) {
+  if (role !== 1) {
+    return { message: "Only admins can access all notifications." };
   }
 
-  return await prisma.notification.findFirst({ where: { id: id ?? "" } });
+  return await prisma.notification.findMany({
+    where: {
+      id: filter.id,
+      userId: filter.userId,
+      priority: filter.priority,
+      isRead: filter.isRead,
+      deleted: filter.deleted,
+    },
+  });
+}
+
+export async function getNotifications(filter: NotificationDefaultFilter) {
+  if (filter.userId && filter.id) {
+    return await prisma.notification.findUnique({
+      where: { userId: filter.userId, id: filter.id, deleted: false },
+    });
+  } else if (filter.userId) {
+    return await prisma.notification.findMany({
+      where: { userId: filter.userId, deleted: false },
+    });
+  } else if (filter.id) {
+    return await prisma.notification.findUnique({
+      where: { id: filter.id, deleted: false },
+    });
+  }
+
+  return { message: "Please provide user or notification ID!" };
 }
 
 export async function createNotification(data: Notification) {

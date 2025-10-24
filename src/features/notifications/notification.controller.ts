@@ -1,6 +1,24 @@
-import * as notificationService from './notification.service';
-import { ExtendedRequest } from '../../core/helper/genericTypes';
-import { NextFunction, Request, Response } from 'express';
+import * as notificationService from "./notification.service";
+import { ExtendedRequest } from "../../core/helper/genericTypes";
+import { NextFunction, Request, Response } from "express";
+
+export async function getAllNotifications(
+  req: ExtendedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const userRoleId = req.user?.roleId;
+    const { filter } = req.body;
+    const notifications = await notificationService.getAllNotifications(
+      userRoleId ?? 0,
+      filter
+    );
+    res.json(notifications);
+  } catch (error) {
+    next(error);
+  }
+}
 
 export async function getNotifications(
   req: ExtendedRequest,
@@ -8,12 +26,8 @@ export async function getNotifications(
   next: NextFunction
 ) {
   try {
-    const { id } = req.body;
-    const userRoleId = req.user?.roleId;
-    const notifications = await notificationService.getNotifications(
-      id,
-      userRoleId ?? 0
-    );
+    const { filter } = req.body;
+    const notifications = await notificationService.getNotifications(filter);
     res.json(notifications);
   } catch (error) {
     next(error);
