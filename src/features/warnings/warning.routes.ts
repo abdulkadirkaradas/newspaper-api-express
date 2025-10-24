@@ -17,11 +17,11 @@ router.get("/all", [checkRole(["Admin"])], getAllWarnings);
 router.get("/", getWarnings);
 router.post(
   "/",
-  [checkRole(["Admin"])],
+  [checkRole(["Admin", "Moderator"])],
   validateRequest(NotificationCreateRequestSchema),
   createWarning
 );
-router.put("/:id/update", [checkRole(["Admin"])], editWarning);
+router.put("/:id/update", [checkRole(["Admin", "Moderator"])], editWarning);
 router.delete("/:id/delete", [checkRole(["Admin"])], deleteWarning);
 
 export default router;
