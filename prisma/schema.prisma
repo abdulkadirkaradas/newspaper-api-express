@@ -22,27 +22,28 @@ model Role {
 }
 
 model User {
-  id                   String         @id @default(cuid())
-  name                 String?
-  lastname             String?
-  username             String         @unique
-  email                String         @unique
-  emailVerifiedAt      DateTime?      @db.Timestamptz(3)
-  password             String
-  blocked              Boolean        @default(false)
-  roleId               Int
-  role                 Role           @relation("UserRole", fields: [roleId], references: [id])
-  deleted              Boolean        @default(false)
-  createdAt            DateTime       @default(now()) @db.Timestamptz(3)
-  updatedAt            DateTime       @updatedAt @db.Timestamptz(3)
-  notifications        Notification[] @relation("UserNotification")
-  warnings             Warning[]      @relation("UserWarning")
-  news                 News[]         @relation("UserNews")
-  newsImages           NewsImage[]    @relation("UserNewsImage")
-  newsReactions        NewsReaction[] @relation("UserNewsReaction")
-  oppositeNewsSource   OppositeNews[] @relation("SourceUser")
-  oppositeNewsOpposite OppositeNews[] @relation("OppositeUser")
-  userBadges           UserBadges[]   @relation("UserBadges")
+  id                 String         @id @default(cuid())
+  name               String?
+  lastname           String?
+  username           String         @unique
+  email              String         @unique
+  emailVerifiedAt    DateTime?      @db.Timestamptz(3)
+  password           String
+  blocked            Boolean        @default(false)
+  roleId             Int
+  role               Role           @relation("UserRole", fields: [roleId], references: [id])
+  deleted            Boolean        @default(false)
+  createdAt          DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime       @updatedAt @db.Timestamptz(3)
+  notifications      Notification[] @relation("UserNotification")
+  warnings           Warning[]      @relation("UserWarning")
+  news               News[]         @relation("UserNews")
+  newsImages         NewsImage[]    @relation("UserNewsImage")
+  newsReactions      NewsReaction[] @relation("UserNewsReaction")
+  oppositeNewsSource OppositeNews[] @relation("SourceUser")
+  oppositeNewsTarget OppositeNews[] @relation("TargetUser")
+  userBadges         UserBadges[]   @relation("UserBadges")
+  OppositeNews       OppositeNews[]
 }
 
 model Notification {
@@ -94,26 +95,26 @@ model NewsCategory {
 }
 
 model News {
-  id                   String         @unique @default(cuid())
-  title                String
-  content              String
-  priority             Int            @default(3)
-  pinned               Boolean        @default(false)
-  visibility           Boolean        @default(true)
-  opposition           Boolean        @default(false)
-  approvedBy           String         @default("")
-  removedBy            String         @default("")
-  userId               String
-  categoryId           String
-  user                 User           @relation("UserNews", fields: [userId], references: [id])
-  category             NewsCategory   @relation("NewsCategory", fields: [categoryId], references: [id])
-  deleted              Boolean        @default(false)
-  createdAt            DateTime       @default(now()) @db.Timestamptz(3)
-  updatedAt            DateTime       @updatedAt @db.Timestamptz(3)
-  images               NewsImage[]    @relation("NewsImage")
-  reactions            NewsReaction[] @relation("NewsReaction")
-  oppositeNewsSource   OppositeNews[] @relation("SourceNews")
-  oppositeNewsOpposite OppositeNews[] @relation("OppositeNews")
+  id                 String         @unique @default(cuid())
+  title              String
+  content            String
+  priority           Int            @default(3)
+  pinned             Boolean        @default(false)
+  visibility         Boolean        @default(true)
+  opposition         Boolean        @default(false)
+  approvedBy         String         @default("")
+  removedBy          String         @default("")
+  userId             String
+  categoryId         String
+  user               User           @relation("UserNews", fields: [userId], references: [id])
+  category           NewsCategory   @relation("NewsCategory", fields: [categoryId], references: [id])
+  deleted            Boolean        @default(false)
+  createdAt          DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime       @updatedAt @db.Timestamptz(3)
+  images             NewsImage[]    @relation("NewsImage")
+  reactions          NewsReaction[] @relation("NewsReaction")
+  oppositeNewsSource OppositeNews[] @relation("SourceNews")
+  oppositeNewsTarget OppositeNews[] @relation("TargetNews")
 }
 
 model NewsImage {
@@ -144,18 +145,20 @@ model NewsReaction {
 }
 
 model OppositeNews {
-  id             String   @id @default(cuid())
-  sourceUserId   String
-  oppositeUserId String
-  sourceNewsId   String
-  oppositeNewsId String
-  sourceUser     User     @relation("SourceUser", fields: [sourceUserId], references: [id])
-  oppositeUser   User     @relation("OppositeUser", fields: [oppositeUserId], references: [id])
-  sourceNews     News     @relation("SourceNews", fields: [sourceNewsId], references: [id])
-  oppositeNews   News     @relation("OppositeNews", fields: [oppositeNewsId], references: [id])
-  deleted        Boolean  @default(false)
-  createdAt      DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt      DateTime @updatedAt @db.Timestamptz(3)
+  id           String   @id @default(cuid())
+  sourceUserId String
+  targetUserId String
+  sourceNewsId String
+  targetNewsId String
+  sourceUser   User     @relation("SourceUser", fields: [sourceUserId], references: [id])
+  targetUser   User     @relation("TargetUser", fields: [targetUserId], references: [id])
+  sourceNews   News     @relation("SourceNews", fields: [sourceNewsId], references: [id])
+  targetNews   News     @relation("TargetNews", fields: [targetNewsId], references: [id])
+  deleted      Boolean  @default(false)
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+  User         User?    @relation(fields: [userId], references: [id])
+  userId       String?
 }
 
 model UserBadges {

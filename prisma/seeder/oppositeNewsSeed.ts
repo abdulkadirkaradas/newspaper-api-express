@@ -4,9 +4,9 @@ import Seeder from "./Seeder";
 
 interface OppositeNews {
   sourceUserId: string;
-  oppositeUserId: string;
+  targetUserId: string;
   sourceNewsId: string;
-  oppositeNewsId: string;
+  targetNewsId: string;
 }
 
 class OppositeNewsSeed extends Seeder {
@@ -17,9 +17,9 @@ class OppositeNewsSeed extends Seeder {
     this.count = count;
     this.ids = {
       sourceUserId: idBag.sourceUserId,
-      oppositeUserId: idBag.oppositeUserId,
+      targetUserId: idBag.targetUserId,
       sourceNewsId: idBag.sourceNewsId,
-      oppositeNewsId: idBag.oppositeNewsId,
+      targetNewsId: idBag.targetNewsId,
     };
     this.generate();
   }
@@ -28,9 +28,9 @@ class OppositeNewsSeed extends Seeder {
     for (let i = 0; i < this.count; i++) {
       this._data.push({
         sourceUserId: this.ids.sourceUserId ?? faker.string.uuid(),
-        oppositeUserId: this.ids.oppositeUserId ?? faker.string.uuid(),
+        targetUserId: this.ids.targetUserId ?? faker.string.uuid(),
         sourceNewsId: this.ids.sourceNewsId ?? faker.string.uuid(),
-        oppositeNewsId: this.ids.oppositeNewsId ?? faker.string.uuid(),
+        targetNewsId: this.ids.targetNewsId ?? faker.string.uuid(),
         deleted: faker.datatype.boolean(),
       });
     }
