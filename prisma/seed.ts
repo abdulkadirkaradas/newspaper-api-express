@@ -97,9 +97,9 @@ const main = async () => {
     if (userRecords.length >= 2 && newsRecords.length >= 2) {
       const oppositeNewsSeeder = new OppositeNewsSeed(1, {
         sourceUserId: userRecords[0].id,
-        oppositeUserId: userRecords[1].id,
+        targetUserId: userRecords[1].id,
         sourceNewsId: newsRecords[0].id,
-        oppositeNewsId: newsRecords[1].id,
+        targetNewsId: newsRecords[1].id,
       });
       await prisma.oppositeNews.createMany({ data: oppositeNewsSeeder.data });
     }

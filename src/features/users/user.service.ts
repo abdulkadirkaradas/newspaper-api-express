@@ -51,16 +51,16 @@ export async function getUser(filter: UserDefaultFilter) {
               createdAt: true,
             },
           },
-          oppositeNewsOpposite: {
+          oppositeNewsTarget: {
             where: { deleted: false },
             include: {
-              oppositeNews: {
+              targetNews: {
                 select: {
                   id: true,
                   title: true,
                 },
               },
-              oppositeUser: {
+              targetUser: {
                 select: {
                   id: true,
                   username: true,
