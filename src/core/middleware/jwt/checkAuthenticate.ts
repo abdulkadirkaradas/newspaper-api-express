@@ -55,11 +55,13 @@ export const checkAuthenticate = (
       );
     }
 
-    if (
-      (user as UserPayload).userId &&
-      req.user?.id !== (user as UserPayload).userId
-    ) {
-      req.user = await getUserInformation((user as UserPayload).userId);
+    if ((user as UserPayload) && (user as UserPayload).userId) {
+      if (
+        (user as UserPayload).userId &&
+        req.user?.id !== (user as UserPayload).userId
+      ) {
+        req.user = await getUserInformation((user as UserPayload).userId);
+      }
     }
 
     next();
