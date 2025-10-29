@@ -6,7 +6,7 @@ This API Project and `Web Project` primarily aim to enable people to engage in a
 
 ## Project structure
 
-This project development with the FDD(Future-Driven Development) structure.
+This project is developed using the FDD (Feature-Driven Development) methodology.
 
 Folder Structure;
 ```
