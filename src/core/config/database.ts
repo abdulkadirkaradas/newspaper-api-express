@@ -3,7 +3,7 @@ import { PrismaClient } from "../../generated/prisma/client";
 export const prisma = new PrismaClient();
 
 export async function getUserInformation(id: string) {
-  return await prisma.user.findFirst({
+  return await prisma.user.findUnique({
     where: { id },
     select: {
         id: true,
