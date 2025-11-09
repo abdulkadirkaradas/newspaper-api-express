@@ -24,10 +24,7 @@ export const checkAuthenticate = (
 
   jwt.verify(token, JWT_SECRET_ACCESS, async (error, user) => {
     if (error) {
-      const refreshToken =
-        req.body.refreshToken ||
-        req.query.refreshToken ||
-        req.headers["x-refresh-token"];
+      const refreshToken = getTokenFromRequest(req);
 
       if (!refreshToken) {
         return res.status(403).json({
@@ -55,15 +52,25 @@ export const checkAuthenticate = (
       );
     }
 
-    if ((user as UserPayload) && (user as UserPayload).userId) {
+    const loggedUser = (user as UserPayload);
+    if (loggedUser && loggedUser.userId) {
       if (
-        (user as UserPayload).userId &&
-        req.user?.id !== (user as UserPayload).userId
+        loggedUser.userId &&
+        req.user?.id !== loggedUser.userId
       ) {
-        req.user = await getUserInformation((user as UserPayload).userId);
+        req.user = await getUserInformation(loggedUser.userId);
       }
     }
 
     next();
   });
 };
+
+function getTokenFromRequest(request: ExtendedRequest): string {
+  const bodyToken = request.body?.refreshToken;
+  const queryToken = request.query?.refreshToken;
+  const header = request.headers["x-refresh-token"];
+  const headerToken = Array.isArray(header) ? header[0] : header;
+
+  return (bodyToken ?? queryToken ?? headerToken ?? null) as string;
+}
