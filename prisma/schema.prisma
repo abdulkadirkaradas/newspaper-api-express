@@ -11,7 +11,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Role {
@@ -100,7 +99,7 @@ model News {
   content            String
   priority           Int            @default(3)
   pinned             Boolean        @default(false)
-  visibility         Boolean        @default(true)
+  visibility         Boolean        @default(false)
   opposition         Boolean        @default(false)
   approvedBy         String         @default("")
   removedBy          String         @default("")
