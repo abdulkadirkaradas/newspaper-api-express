@@ -21,11 +21,14 @@ const main = async () => {
         { name: "Moderator", type: "moderator" },
         { name: "Writer", type: "writer" },
       ],
+      skipDuplicates: true,
     });
 
     // 1.1 Admin User
-    await prisma.user.create({
-      data: {
+    await prisma.user.upsert({
+      where: { email: "admin@local.com" },
+      update: {},
+      create: {
         name: "Admin",
         lastname: "User",
         username: "admin",
