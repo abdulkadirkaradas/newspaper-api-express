@@ -1,17 +1,18 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "module": "commonjs",
-        "rootDir": "./src",
-        "outDir": "./dist",
-        "strict": true,
-        "sourceMap": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "skipDefaultLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "importHelpers": true
-    },
-    "include": ["src"],
-    "exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
