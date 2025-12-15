@@ -6,21 +6,20 @@ interface Announcement {
   priority: number;
 }
 
-export async function getAllAnnouncements(
-  filter: "id" | "all",
-  id: string | null
-) {
-  if (filter === "all" && !id) {
-    return await prisma.announcement.findMany();
+export class AnnouncementService {
+  static async getAllAnnouncements(filter: "id" | "all", id: string | null) {
+    if (filter === "all" && !id) {
+      return await prisma.announcement.findMany();
+    }
+
+    if (filter !== "all" && !id) {
+      return {};
+    }
+
+    return await prisma.announcement.findUnique({ where: { id: id ?? "" } });
   }
 
-  if (filter !== "all" && !id) {
-    return {};
+  static async createAnnouncement(data: Announcement) {
+    return await prisma.announcement.create({ data });
   }
-
-  return await prisma.announcement.findUnique({ where: { id: id ?? "" } });
-}
-
-export async function createAnnouncement(data: Announcement) {
-  return await prisma.announcement.create({ data });
 }
