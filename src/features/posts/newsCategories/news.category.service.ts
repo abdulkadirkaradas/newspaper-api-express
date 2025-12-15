@@ -10,35 +10,37 @@ interface NewsCategoryFilter {
   deleted?: boolean;
 }
 
-export async function getCategory(filter: NewsCategoryFilter) {
-  if (!filter.id && !filter.deleted) {
-    return await prisma.newsCategory.findMany({ where: { deleted: false } });
-  } else if (filter.id && !filter.deleted) {
-    return await prisma.newsCategory.findUnique({ where: { id: filter.id } });
+export class NewsCategoryService {
+  static async getCategory(filter: NewsCategoryFilter) {
+    if (!filter.id && !filter.deleted) {
+      return await prisma.newsCategory.findMany({ where: { deleted: false } });
+    } else if (filter.id && !filter.deleted) {
+      return await prisma.newsCategory.findUnique({ where: { id: filter.id } });
+    }
+
+    return await prisma.newsCategory.findMany({
+      where: { id: filter.id, deleted: filter.deleted },
+    });
   }
 
-  return await prisma.newsCategory.findMany({
-    where: { id: filter.id, deleted: filter.deleted },
-  });
-}
+  static async createCategory(data: NewsCategory) {
+    return await prisma.newsCategory.create({ data });
+  }
 
-export async function createCategory(data: NewsCategory) {
-  return await prisma.newsCategory.create({ data });
-}
+  static async updateCategory(
+    id: string,
+    data: { name?: string; description?: string }
+  ) {
+    return await prisma.newsCategory.update({
+      where: { id: id },
+      data: { name: data.name, description: data.description },
+    });
+  }
 
-export async function updateCategory(
-  id: string,
-  data: { name?: string; description?: string }
-) {
-  return await prisma.newsCategory.update({
-    where: { id: id },
-    data: { name: data.name, description: data.description },
-  });
-}
-
-export async function deleteCategory(id: string, deleted: boolean) {
-  return await prisma.newsCategory.update({
-    where: { id: id },
-    data: { deleted: deleted },
-  });
+  static async deleteCategory(id: string, deleted: boolean) {
+    return await prisma.newsCategory.update({
+      where: { id: id },
+      data: { deleted: deleted },
+    });
+  }
 }

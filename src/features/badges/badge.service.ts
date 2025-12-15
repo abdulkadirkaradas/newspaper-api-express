@@ -8,18 +8,20 @@ interface Badge {
   fullpath: string;
 }
 
-export async function getBadges(filter: "id" | "all", id: string | null) {
-  if (filter === "all" && !id) {
-    return await prisma.badge.findMany();
+export class BadgeService {
+  static async getBadges(filter: "id" | "all", id: string | null) {
+    if (filter === "all" && !id) {
+      return await prisma.badge.findMany();
+    }
+
+    if (filter === "id" && id) {
+      return await prisma.badge.findFirst({ where: { id: id ?? "" } });
+    }
+
+    return {};
   }
 
-  if (filter === "id" && id) {
-    return await prisma.badge.findFirst({ where: { id: id ?? "" } });
+  static async createBadge(data: Badge) {
+    return await prisma.badge.create({ data });
   }
-
-  return {};
-}
-
-export async function createBadge(data: Badge) {
-  return await prisma.badge.create({ data });
 }

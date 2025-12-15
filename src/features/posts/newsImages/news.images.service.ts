@@ -7,19 +7,21 @@ interface NewsImage {
   newsId: string;
 }
 
-export async function upload(images: NewsImage) {
-  return Promise.all(
-    images.files.map((file) => {
-      const mimeType = path.extname(file.originalname);
-      return prisma.newsImage.create({
-        data: {
-          name: file.filename,
-          ext: mimeType,
-          fullpath: `/public/uploads/newsImages/${file.filename}`,
-          userId: images.userId,
-          newsId: images.newsId,
-        },
-      });
-    })
-  );
+export class NewsImageService {
+  static async upload(images: NewsImage) {
+    return Promise.all(
+      images.files.map((file) => {
+        const mimeType = path.extname(file.originalname);
+        return prisma.newsImage.create({
+          data: {
+            name: file.filename,
+            ext: mimeType,
+            fullpath: `/public/uploads/newsImages/${file.filename}`,
+            userId: images.userId,
+            newsId: images.newsId,
+          },
+        });
+      })
+    );
+  }
 }

@@ -2,36 +2,37 @@ import { checkRole } from "../../core/middleware/checkRole";
 import { NotificationCreateRequestSchema } from "./validationScheme";
 import { Router } from "express";
 import { validateRequest } from "../../core/helper/genericValidation";
-import {
-  createNotification,
-  getAllNotifications,
-  getNotifications,
-  deleteNotification,
-  changeNotificationStatus,
-  editNotification,
-} from "./notification.controller";
+import { NotificationController } from "./notification.controller";
 
 const router = Router();
 
-router.get("/all", [checkRole(["Admin"])], getAllNotifications);
-router.get("/", getNotifications);
+router.get(
+  "/all",
+  [checkRole(["Admin"])],
+  NotificationController.getAllNotifications
+);
+router.get("/", NotificationController.getNotifications);
 router.post(
   "/",
   [
     checkRole(["Admin", "Moderator"]),
     validateRequest(NotificationCreateRequestSchema),
   ],
-  createNotification
+  NotificationController.createNotification
 );
 router.put(
   "/:id/update",
   [checkRole(["Admin", "Moderator"])],
-  editNotification
+  NotificationController.editNotification
 );
 router.patch(
   "/:id/read",
   [checkRole(["Admin", "Writer"])],
-  changeNotificationStatus
+  NotificationController.changeNotificationStatus
 );
-router.delete("/:id/delete", [checkRole(["Admin"])], deleteNotification);
+router.delete(
+  "/:id/delete",
+  [checkRole(["Admin"])],
+  NotificationController.deleteNotification
+);
 export default router;

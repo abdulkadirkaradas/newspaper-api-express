@@ -18,69 +18,68 @@ type NotificationAdminFilter = NotificationDefaultFilter & {
   deleted?: boolean;
 };
 
-export async function getAllNotifications(
-  role: number,
-  filter: NotificationAdminFilter
-) {
-  if (role !== 1) {
-    return { message: "Only admins can access all notifications." };
-  }
+export class NotificationService {
+  static async getAllNotifications(
+    role: number,
+    filter: NotificationAdminFilter
+  ) {
+    if (role !== 1) {
+      return { message: "Only admins can access all notifications." };
+    }
 
-  return await prisma.notification.findMany({
-    where: {
-      id: filter.id,
-      userId: filter.userId,
-      priority: filter.priority,
-      isRead: filter.isRead,
-      deleted: filter.deleted,
-    },
-  });
-}
-
-export async function getNotifications(filter: NotificationDefaultFilter) {
-  if (filter.userId && filter.id) {
-    return await prisma.notification.findUnique({
-      where: { userId: filter.userId, id: filter.id, deleted: false },
-    });
-  } else if (filter.userId) {
     return await prisma.notification.findMany({
-      where: { userId: filter.userId, deleted: false },
-    });
-  } else if (filter.id) {
-    return await prisma.notification.findUnique({
-      where: { id: filter.id, deleted: false },
+      where: {
+        id: filter.id,
+        userId: filter.userId,
+        priority: filter.priority,
+        isRead: filter.isRead,
+        deleted: filter.deleted,
+      },
     });
   }
 
-  return { message: "Please provide user or notification ID!" };
-}
+  static async getNotifications(filter: NotificationDefaultFilter) {
+    if (filter.userId && filter.id) {
+      return await prisma.notification.findUnique({
+        where: { userId: filter.userId, id: filter.id, deleted: false },
+      });
+    } else if (filter.userId) {
+      return await prisma.notification.findMany({
+        where: { userId: filter.userId, deleted: false },
+      });
+    } else if (filter.id) {
+      return await prisma.notification.findUnique({
+        where: { id: filter.id, deleted: false },
+      });
+    }
 
-export async function createNotification(data: Notification) {
-  return await prisma.notification.create({
-    data,
-  });
-}
+    return { message: "Please provide user or notification ID!" };
+  }
 
-export async function editNotification(
-  id: string,
-  data: Partial<Notification>
-) {
-  return await prisma.notification.update({
-    where: { id: id },
-    data,
-  });
-}
+  static async createNotification(data: Notification) {
+    return await prisma.notification.create({
+      data,
+    });
+  }
 
-export async function changeNotificationStatus(id: string, status: boolean) {
-  return await prisma.notification.update({
-    where: { id },
-    data: { isRead: status },
-  });
-}
+  static async editNotification(id: string, data: Partial<Notification>) {
+    return await prisma.notification.update({
+      where: { id: id },
+      data,
+    });
+  }
 
-export async function deleteNotification(id: string) {
-  return await prisma.notification.update({
-    where: { id },
-    data: { deleted: true },
-  });
+  static async changeNotificationStatus(id: string, status: boolean) {
+    return await prisma.notification.update({
+      where: { id },
+      data: { isRead: status },
+    });
+  }
+
+  static async deleteNotification(id: string) {
+    return await prisma.notification.update({
+      where: { id },
+      data: { deleted: true },
+    });
+  }
 }
