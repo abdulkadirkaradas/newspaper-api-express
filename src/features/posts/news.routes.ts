@@ -1,5 +1,5 @@
 import { fileUploadMiddleware } from "../../core/middleware/fileUpload";
-import { uploadImages } from "./newsImages/news.images.controller";
+import { NewsImageController } from "./newsImages/news.images.controller";
 import {
   getNews,
   createNews,
@@ -43,7 +43,7 @@ router.put(
 router.post(
   "/:newsId/upload",
   [checkAuthenticate, fileUploadMiddleware("news_images")],
-  uploadImages
+  NewsImageController.uploadImages
 );
 
 export default router;
