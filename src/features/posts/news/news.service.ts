@@ -1,0 +1,125 @@
+import { prisma } from "../../../core/config/database";
+
+interface News {
+  title: string;
+  content: string;
+  categoryId: string;
+  userId: string;
+}
+
+type NewsFilter = {
+  id?: string;
+  userId?: string;
+  categoryId?: string;
+  priority?: number;
+  pinned?: boolean;
+  deleted?: boolean;
+};
+
+type NewsStatusFilter = {
+  pinned?: boolean;
+  visibility?: boolean;
+  deleted?: boolean;
+};
+
+export async function getNews(roleId: number, filter: NewsFilter) {
+  // Define allowed filter keys based on user role
+  const allowedKeys =
+    roleId === 3
+      ? (["id", "userId", "categoryId"] as (keyof NewsFilter)[])
+      : ([
+          "id",
+          "userId",
+          "categoryId",
+          "priority",
+          "pinned",
+          "deleted",
+        ] as (keyof NewsFilter)[]);
+
+  // Build the where clause dynamically, only including allowed keys
+  const where: Record<string, any> = {};
+  for (const key of allowedKeys) {
+    const v = (filter as NewsFilter)[key];
+    if (v !== undefined && v !== null && v !== "") where[key] = v;
+  }
+
+  // Enforce at least one filter for roleId 3 (regular users)
+  if (roleId === 3 && Object.values(where).length === 0) {
+    return "Please provide at least one of the news, user or category ID's!";
+  }
+
+  // If no filters are provided, defaults to returning the last 7 days of posts
+  if (Object.keys(where).length === 0) {
+    where["createdAt"] = {
+      gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+    };
+  }
+
+  return await prisma.news.findMany({
+    where: where,
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      categoryId: true,
+      priority: true,
+      oppositeNewsTarget: {
+        select: {
+          id: true,
+          targetNews: true,
+          targetUser: true,
+          createdAt: true,
+        },
+      },
+      createdAt: true,
+    },
+  });
+}
+
+export async function create(data: News) {
+  return await prisma.news.create({ data });
+}
+
+export async function update(
+  roleId: number,
+  id: string,
+  data: Partial<Omit<News, "userId">>
+) {
+  const updateData: Partial<typeof data> = { ...data };
+  if (roleId === 3 && updateData.categoryId) delete updateData.categoryId;
+
+  return await prisma.news.update({
+    where: { id },
+    data: updateData,
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      categoryId: true,
+      updatedAt: true,
+    },
+  });
+}
+
+export async function changeStatus(
+  userId: string,
+  id: string,
+  status: Partial<NewsStatusFilter>
+) {
+  const data = { ...status, removedBy: status.deleted ? userId : "" };
+
+  return await prisma.news.update({
+    where: { id },
+    data,
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      categoryId: true,
+      pinned: true,
+      visibility: true,
+      deleted: true,
+      updatedAt: true,
+    },
+  });
+}
