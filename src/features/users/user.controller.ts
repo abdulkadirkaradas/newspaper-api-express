@@ -7,9 +7,11 @@ export class UserController {
     try {
       const { filter } = req.body;
       const user = await UserService.getUser(filter);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
+
+      if (user.filter && user.filter === "failed") {
+        return res.status(404).json({ message: "At least one filter is required" });
       }
+
       return res.json(user);
     } catch (error) {
       next(error);

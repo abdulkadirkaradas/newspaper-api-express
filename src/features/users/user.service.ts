@@ -12,6 +12,12 @@ interface UpdateUserStatus {
 
 export class UserService {
   static async getUser(filter: UserDefaultFilter) {
+    if (!filter.id || !filter.email || !filter.username) {
+      return {
+        filter: "failed"
+      };
+    }
+
     return await prisma.user.findUnique({
       where: {
         id: filter.id,
