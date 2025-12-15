@@ -1,11 +1,6 @@
 import { fileUploadMiddleware } from "../../core/middleware/fileUpload";
 import { NewsImageController } from "./newsImages/news.images.controller";
-import {
-  getNews,
-  createNews,
-  updateNews,
-  changeNewsStatus,
-} from "./news/news.controller";
+import { NewsController } from "./news/news.controller";
 import { Router } from "express";
 import { checkAuthenticate } from "../../core/middleware/jwt/checkAuthenticate";
 import {
@@ -20,21 +15,21 @@ const router = Router();
 /**
  * Common News Routes
  */
-router.get("/", getNews);
+router.get("/", NewsController.getNews);
 router.post(
   "/:userId/create",
   [validateRequest(NewsCreateRequestSchema)],
-  createNews
+  NewsController.createNews
 );
 router.put(
   "/:newsId/update",
   [validateRequest(NewsUpdateRequestSchema)],
-  updateNews
+  NewsController.updateNews
 );
 router.put(
   "/:newsId/change-status",
   [validateRequest(NewsStatusUpdateRequestSchema)],
-  changeNewsStatus
+  NewsController.changeNewsStatus
 );
 
 /**
