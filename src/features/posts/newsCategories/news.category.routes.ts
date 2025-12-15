@@ -5,23 +5,22 @@ import {
   NewsCategoryCreateRequestSchema,
   NewsCategoryUpdateSchema,
 } from "./validationScheme";
-import {
-  getCategories,
-  createCategory,
-  updateCategory,
-  deleteCategory,
-} from "./news.category.controller";
+import { NewsCategoryController } from "./news.category.controller";
 
 const router = Router();
 
-router.get("/", [checkRole(["Admin", "Moderator"])], getCategories);
+router.get(
+  "/",
+  [checkRole(["Admin", "Moderator"])],
+  NewsCategoryController.getCategories
+);
 router.post(
   "/",
   [
     checkRole(["Admin", "Moderator"]),
     validateRequest(NewsCategoryCreateRequestSchema),
   ],
-  createCategory
+  NewsCategoryController.createCategory
 );
 router.put(
   "/:id/update",
@@ -29,8 +28,11 @@ router.put(
     checkRole(["Admin", "Moderator"]),
     validateRequest(NewsCategoryUpdateSchema),
   ],
-  updateCategory
+  NewsCategoryController.updateCategory
 );
-router.delete("/:id/delete", [checkRole(["Admin"]), deleteCategory]);
+router.delete("/:id/delete", [
+  checkRole(["Admin"]),
+  NewsCategoryController.deleteCategory,
+]);
 
 export default router;
