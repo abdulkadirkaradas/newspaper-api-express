@@ -58,21 +58,58 @@ export class NewsService {
 
     return await prisma.news.findMany({
       where: where,
-      select: {
-        id: true,
-        title: true,
-        content: true,
+      orderBy: {
+        createdAt: "desc",
+      },
+      omit: {
         categoryId: true,
-        priority: true,
-        oppositeNewsTarget: {
+        deleted: true,
+        approvedBy: true,
+        removedBy: true,
+      },
+      include: {
+        category: {
           select: {
             id: true,
-            targetNews: true,
-            targetUser: true,
+            name: true,
+          },
+        },
+        oppositeNewsTarget: {
+          where: { deleted: false },
+          select: {
+            id: true,
+            targetNews: {
+              select: {
+                id: true,
+                title: true,
+                content: true,
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+                createdAt: true,
+              },
+            },
+            targetUser: {
+              select: {
+                id: true,
+                name: true,
+                lastname: true,
+                username: true,
+              },
+            },
             createdAt: true,
           },
         },
-        createdAt: true,
+        images: {
+          where: { deleted: false },
+          select: {
+            id: true,
+            fullpath: true,
+          },
+        },
       },
     });
   }
