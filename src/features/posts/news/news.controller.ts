@@ -66,4 +66,28 @@ export class NewsController {
       next(error);
     }
   }
+
+  static async approveNews(
+    req: ExtendedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.user?.id;
+      const { newsId } = req.params;
+      const news = await NewsService.approve(userId, newsId);
+      res.json({
+        message: "News approved successfully",
+        news: news,
+      });
+    } catch (error: any) {
+      if (error.message === "News is already approved!") {
+        res.status(400).json({
+          message: error.message,
+        });
+        return;
+      }
+      next(error);
+    }
+  }
 }

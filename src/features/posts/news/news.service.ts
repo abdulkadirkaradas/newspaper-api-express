@@ -124,4 +124,28 @@ export class NewsService {
       },
     });
   }
+
+  static async approve(userId: string, id: string) {
+    const checkNews = await prisma.news.findUnique({
+      where: { id },
+    });
+
+    if (!checkNews) throw new Error("News not found!");
+
+    if (checkNews.visibility && checkNews.approvedBy) {
+      throw new Error("News is already approved!");
+    }
+
+    return await prisma.news.update({
+      where: { id: id },
+      data: { visibility: true, approvedBy: userId },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        categoryId: true,
+        updatedAt: true,
+      },
+    });
+  }
 }

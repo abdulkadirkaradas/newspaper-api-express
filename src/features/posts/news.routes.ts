@@ -9,6 +9,7 @@ import {
   NewsUpdateRequestSchema,
 } from "./news/validationScheme";
 import { validateRequest } from "../../core/helper/genericValidation";
+import { checkRole } from "../../core/middleware/checkRole";
 
 const router = Router();
 
@@ -26,10 +27,15 @@ router.put(
   [validateRequest(NewsUpdateRequestSchema)],
   NewsController.updateNews
 );
-router.put(
+router.patch(
   "/:newsId/change-status",
   [validateRequest(NewsStatusUpdateRequestSchema)],
   NewsController.changeNewsStatus
+);
+router.patch(
+  "/:newsId/approve",
+  [checkRole(["Admin", "Moderator"])],
+  NewsController.approveNews
 );
 
 /**
