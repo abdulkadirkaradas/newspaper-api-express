@@ -21,7 +21,7 @@ class NewsSeed extends Seeder {
         priority: randomInt(1, 3),
         pinned: faker.datatype.boolean(),
         visibility: faker.datatype.boolean(),
-        approvedBy: faker.string.uuid(),
+        approvedBy: this.ids.userId ?? faker.string.uuid(),
         userId: this.ids.userId ?? faker.string.uuid(),
         categoryId: this.ids.categoryId ?? faker.string.uuid(),
       });
