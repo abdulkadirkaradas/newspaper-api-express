@@ -1,8 +1,8 @@
 import announcementRouters from "../features/announcements/announcement.routes";
 import authRouters from "../features/auth/auth.routes";
 import badgeRouters from "../features/badges/badge.routes";
-import news from "../features/posts/news.routes";
-import newsCategoryRoutes from "../features/posts/newsCategories/news.category.routes";
+import posts from "../features/posts/post.routes";
+import postCategoryRoutes from "../features/posts/postCategories/post.category.routes";
 import notificationRoutes from "../features/notifications/notification.routes";
 import userRoutes from "../features/users/user.routes";
 import warningRoutes from "../features/warnings/warning.routes";
@@ -26,7 +26,7 @@ router.use("/auth", authRouters);
 router.use("/notifications", [checkAuthenticate], notificationRoutes);
 router.use("/warnings", [checkAuthenticate], warningRoutes);
 router.use("/users", [checkAuthenticate], userRoutes);
-router.use("/news-categories", [checkAuthenticate], newsCategoryRoutes);
-router.use("/news", [checkAuthenticate], news);
+router.use("/post-categories", [checkAuthenticate], postCategoryRoutes);
+router.use("/post", [checkAuthenticate], posts);
 
 export default router;
