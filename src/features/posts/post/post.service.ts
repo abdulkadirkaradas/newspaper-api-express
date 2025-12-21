@@ -1,14 +1,14 @@
 import { prisma } from "../../../core/config/database";
 import { Prisma } from "@prisma/client";
 
-interface News {
+interface Post {
   title: string;
   content: string;
   categoryId: string;
   userId: string;
 }
 
-type NewsFilter = {
+type PostFilter = {
   id?: string;
   userId?: string;
   categoryId?: string;
@@ -17,25 +17,25 @@ type NewsFilter = {
   deleted?: boolean;
 };
 
-type NewsStatusFilter = {
+type PostStatusFilter = {
   pinned?: boolean;
   visibility?: boolean;
   deleted?: boolean;
 };
 
-type NewsVote = 1 | -1;
-interface NewsVoteParameters {
-  newsId: string;
+type PostVote = 1 | -1;
+interface PostVoteParameters {
+  postId: string;
   userId: string;
-  value: NewsVote;
+  value: PostVote;
 }
 
-export class NewsService {
-  static async getNews(roleId: number, filter: NewsFilter) {
+export class PostService {
+  static async getPost(roleId: number, filter: PostFilter) {
     // Define allowed filter keys based on user role
     const allowedKeys =
       roleId === 3
-        ? (["id", "userId", "categoryId"] as (keyof NewsFilter)[])
+        ? (["id", "userId", "categoryId"] as (keyof PostFilter)[])
         : ([
             "id",
             "userId",
@@ -43,18 +43,18 @@ export class NewsService {
             "priority",
             "pinned",
             "deleted",
-          ] as (keyof NewsFilter)[]);
+          ] as (keyof PostFilter)[]);
 
     // Build the where clause dynamically, only including allowed keys
     const where: Record<string, any> = {};
     for (const key of allowedKeys) {
-      const v = (filter as NewsFilter)[key];
+      const v = (filter as PostFilter)[key];
       if (v !== undefined && v !== null && v !== "") where[key] = v;
     }
 
     // Enforce at least one filter for roleId 3 (regular users)
     if (roleId === 3 && Object.values(where).length === 0) {
-      return "Please provide at least one of the news, user or category ID's!";
+      return "Please provide at least one of the post, user or category ID's!";
     }
 
     // If no filters are provided, defaults to returning the last 7 days of posts
@@ -64,7 +64,8 @@ export class NewsService {
       };
     }
 
-    return await prisma.news.findMany({
+    prisma
+    return await prisma.post.findMany({
       where: where,
       orderBy: {
         createdAt: "desc",
@@ -82,11 +83,11 @@ export class NewsService {
             name: true,
           },
         },
-        oppositeNewsTarget: {
+        oppositePostTarget: {
           where: { deleted: false },
           select: {
             id: true,
-            targetNews: {
+            targetPost: {
               select: {
                 id: true,
                 title: true,
@@ -122,19 +123,19 @@ export class NewsService {
     });
   }
 
-  static async create(data: News) {
-    return await prisma.news.create({ data });
+  static async create(data: Post) {
+    return await prisma.post.create({ data });
   }
 
   static async update(
     roleId: number,
     id: string,
-    data: Partial<Omit<News, "userId">>
+    data: Partial<Omit<Post, "userId">>
   ) {
     const updateData: Partial<typeof data> = { ...data };
     if (roleId === 3 && updateData.categoryId) delete updateData.categoryId;
 
-    return await prisma.news.update({
+    return await prisma.post.update({
       where: { id },
       data: updateData,
       select: {
@@ -150,11 +151,11 @@ export class NewsService {
   static async changeStatus(
     userId: string,
     id: string,
-    status: Partial<NewsStatusFilter>
+    status: Partial<PostStatusFilter>
   ) {
     const data = { ...status, removedBy: status.deleted ? userId : "" };
 
-    return await prisma.news.update({
+    return await prisma.post.update({
       where: { id },
       data,
       select: {
@@ -171,17 +172,17 @@ export class NewsService {
   }
 
   static async approve(userId: string, id: string) {
-    const checkNews = await prisma.news.findUnique({
+    const checkPost = await prisma.post.findUnique({
       where: { id },
     });
 
-    if (!checkNews) throw new Error("News not found!");
+    if (!checkPost) throw new Error("Post not found!");
 
-    if (checkNews.visibility && checkNews.approvedBy) {
-      throw new Error("News is already approved!");
+    if (checkPost.visibility && checkPost.approvedBy) {
+      throw new Error("Post is already approved!");
     }
 
-    return await prisma.news.update({
+    return await prisma.post.update({
       where: { id: id },
       data: { visibility: true, approvedBy: userId },
       select: {
@@ -194,21 +195,21 @@ export class NewsService {
     });
   }
 
-  static async handleVote({ userId, newsId, value }: NewsVoteParameters) {
+  static async handleVote({ userId, postId, value }: PostVoteParameters) {
     return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      const existingVote = await tx.newsReaction.findUnique({
+      const existingVote = await tx.postReaction.findUnique({
         where: {
-          newsId_userId: { userId, newsId },
+          postId_userId: { userId, postId },
         },
       });
 
       if (!existingVote) {
-        await tx.newsReaction.create({
-          data: { userId, newsId, value },
+        await tx.postReaction.create({
+          data: { userId, postId, value },
         });
 
-        await tx.news.update({
-          where: { id: newsId },
+        await tx.post.update({
+          where: { id: postId },
           data: { score: { increment: value } },
         });
 
@@ -216,13 +217,13 @@ export class NewsService {
       }
 
       if (existingVote.deleted) {
-        await tx.newsReaction.update({
+        await tx.postReaction.update({
           where: { id: existingVote.id },
           data: { value, deleted: false },
         });
 
-        await tx.news.update({
-          where: { id: newsId },
+        await tx.post.update({
+          where: { id: postId },
           data: { score: { increment: value } },
         });
 
@@ -230,13 +231,13 @@ export class NewsService {
       }
 
       if (existingVote.value === value) {
-        await tx.newsReaction.update({
+        await tx.postReaction.update({
           where: { id: existingVote.id },
           data: { deleted: true },
         });
 
-        await tx.news.update({
-          where: { id: newsId },
+        await tx.post.update({
+          where: { id: postId },
           data: { score: { decrement: value } },
         });
 
@@ -245,13 +246,13 @@ export class NewsService {
 
       const diff = value - existingVote.value;
 
-      await tx.newsReaction.update({
+      await tx.postReaction.update({
         where: { id: existingVote.id },
         data: { value, deleted: false },
       });
 
-      await tx.news.update({
-        where: { id: newsId },
+      await tx.post.update({
+        where: { id: postId },
         data: { score: { increment: diff } },
       });
 
