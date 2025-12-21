@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import Seeder from "./Seeder";
 import { randomInt } from "crypto";
 
-class NewsSeed extends Seeder {
+class PostSeed extends Seeder {
   private ids: { userId: string; categoryId: string };
 
   constructor(count: number, userId: string, categoryId: string) {
@@ -29,4 +29,4 @@ class NewsSeed extends Seeder {
   }
 }
 
-export default NewsSeed;
+export default PostSeed;

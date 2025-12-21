@@ -36,13 +36,13 @@ model User {
   updatedAt          DateTime       @updatedAt @db.Timestamptz(3)
   notifications      Notification[] @relation("UserNotification")
   warnings           Warning[]      @relation("UserWarning")
-  news               News[]         @relation("UserNews")
-  newsImages         NewsImage[]    @relation("UserNewsImage")
-  newsReactions      NewsReaction[] @relation("UserNewsReaction")
-  oppositeNewsSource OppositeNews[] @relation("SourceUser")
-  oppositeNewsTarget OppositeNews[] @relation("TargetUser")
+  posts              Post[]         @relation("UserPost")
+  postImages         PostImage[]    @relation("UserPostImage")
+  postReactions      PostReaction[] @relation("UserPostReaction")
+  oppositePostSource OppositePost[] @relation("SourceUser")
+  oppositePostTarget OppositePost[] @relation("TargetUser")
   userBadges         UserBadges[]   @relation("UserBadges")
-  OppositeNews       OppositeNews[]
+  OppositePost       OppositePost[]
 }
 
 model Notification {
@@ -83,17 +83,17 @@ model Badge {
   userBadges  UserBadges[] @relation("Badge")
 }
 
-model NewsCategory {
+model PostCategory {
   id          String   @id @default(cuid())
   name        String
   description String
   deleted     Boolean  @default(false)
   createdAt   DateTime @default(now()) @db.Timestamptz(3)
   updatedAt   DateTime @updatedAt @db.Timestamptz(3)
-  news        News[]   @relation("NewsCategory")
+  posts       Post[]   @relation("PostCategory")
 }
 
-model News {
+model Post {
   id                 String         @unique @default(cuid())
   title              String
   content            String
@@ -108,55 +108,55 @@ model News {
   upvotes            Int            @default(0)
   downvotes          Int            @default(0)
   score              Int            @default(0)
-  user               User           @relation("UserNews", fields: [userId], references: [id])
-  category           NewsCategory   @relation("NewsCategory", fields: [categoryId], references: [id])
+  user               User           @relation("UserPost", fields: [userId], references: [id])
+  category           PostCategory   @relation("PostCategory", fields: [categoryId], references: [id])
   deleted            Boolean        @default(false)
   createdAt          DateTime       @default(now()) @db.Timestamptz(3)
   updatedAt          DateTime       @updatedAt @db.Timestamptz(3)
-  images             NewsImage[]    @relation("NewsImage")
-  reactions          NewsReaction[] @relation("NewsReaction")
-  oppositeNewsSource OppositeNews[] @relation("SourceNews")
-  oppositeNewsTarget OppositeNews[] @relation("TargetNews")
+  images             PostImage[]    @relation("PostImage")
+  reactions          PostReaction[] @relation("PostReaction")
+  oppositePostSource OppositePost[] @relation("SourcePost")
+  oppositePostTarget OppositePost[] @relation("TargetPost")
 }
 
-model NewsImage {
+model PostImage {
   id        String   @id @default(cuid())
   name      String
   ext       String
   fullpath  String
   userId    String
-  newsId    String
-  user      User     @relation("UserNewsImage", fields: [userId], references: [id])
-  news      News     @relation("NewsImage", fields: [newsId], references: [id])
+  postId    String
+  user      User     @relation("UserPostImage", fields: [userId], references: [id])
+  post      Post     @relation("PostImage", fields: [postId], references: [id])
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 }
 
-model NewsReaction {
+model PostReaction {
   id        String   @unique @default(cuid())
   value     Int
   userId    String
-  newsId    String
-  user      User     @relation("UserNewsReaction", fields: [userId], references: [id])
-  news      News     @relation("NewsReaction", fields: [newsId], references: [id])
+  postId    String
+  user      User     @relation("UserPostReaction", fields: [userId], references: [id])
+  post      Post     @relation("PostReaction", fields: [postId], references: [id])
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
-  @@unique([newsId, userId])
-  @@index([newsId])
+  @@unique([postId, userId])
+  @@index([postId])
 }
 
-model OppositeNews {
+model OppositePost {
   id           String   @id @default(cuid())
   sourceUserId String
   targetUserId String
-  sourceNewsId String
-  targetNewsId String
+  sourcePostId String
+  targetPostId String
   sourceUser   User     @relation("SourceUser", fields: [sourceUserId], references: [id])
   targetUser   User     @relation("TargetUser", fields: [targetUserId], references: [id])
-  sourceNews   News     @relation("SourceNews", fields: [sourceNewsId], references: [id])
-  targetNews   News     @relation("TargetNews", fields: [targetNewsId], references: [id])
+  sourcePost   Post     @relation("SourcePost", fields: [sourcePostId], references: [id])
+  targetPost   Post     @relation("TargetPost", fields: [targetPostId], references: [id])
   deleted      Boolean  @default(false)
   createdAt    DateTime @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime @updatedAt @db.Timestamptz(3)

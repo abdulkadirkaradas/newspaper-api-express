@@ -1,9 +1,9 @@
-import { NewsService } from "./news.service";
+import { PostService } from "./post.service";
 import { NextFunction, Request, Response } from "express";
 import { ExtendedRequest } from "../../../core/helper/genericTypes";
 
-export class NewsController {
-  static async getNews(
+export class PostController {
+  static async getPost(
     req: ExtendedRequest,
     res: Response,
     next: NextFunction
@@ -11,97 +11,97 @@ export class NewsController {
     try {
       const { filter } = req.body;
       const userRoleId = req.user?.roleId;
-      const news = await NewsService.getNews(userRoleId, filter);
-      res.json(news);
+      const post = await PostService.getPost(userRoleId, filter);
+      res.json(post);
     } catch (error) {
       next(error);
     }
   }
 
-  static async createNews(
+  static async createPost(
     req: ExtendedRequest,
     res: Response,
     next: NextFunction
   ) {
     try {
       const data = { ...req.body, userId: req.user.id };
-      const news = await NewsService.create(data);
-      res.json(news);
+      const post = await PostService.create(data);
+      res.json(post);
     } catch (error) {
       next(error);
     }
   }
 
-  static async updateNews(
+  static async updatePost(
     req: ExtendedRequest,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const { newsId } = req.params;
+      const { postId } = req.params;
       const data = req.body;
       const roleId = req.user.roleId;
-      const news = await NewsService.update(roleId, newsId, data);
-      res.json(news);
+      const post = await PostService.update(roleId, postId, data);
+      res.json(post);
     } catch (error) {
       next(error);
     }
   }
 
-  static async voteNews(
+  static async votePost(
     req: ExtendedRequest,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const { newsId } = req.params;
+      const { postId } = req.params;
       const { value } = req.body;
       const userId = req.user.id;
-      const news = await NewsService.handleVote({
-        newsId,
+      const post = await PostService.handleVote({
+        postId,
         userId,
         value: Number(value) as 1 | -1,
       });
-      res.json(news);
+      res.json(post);
     } catch (error) {
       next(error);
     }
   }
 
-  static async changeNewsStatus(
+  static async changePostStatus(
     req: ExtendedRequest,
     res: Response,
     next: NextFunction
   ) {
     try {
       const userId = req.user?.id;
-      const { newsId } = req.params;
+      const { postId } = req.params;
       const { filter } = req.body;
-      const news = await NewsService.changeStatus(userId, newsId, filter);
+      const post = await PostService.changeStatus(userId, postId, filter);
       res.json({
-        message: "News status updated successfully",
-        news: news,
+        message: "Post status updated successfully",
+        post: post,
       });
     } catch (error) {
       next(error);
     }
   }
 
-  static async approveNews(
+  static async approvePost(
     req: ExtendedRequest,
     res: Response,
     next: NextFunction
   ) {
     try {
       const userId = req.user?.id;
-      const { newsId } = req.params;
-      const news = await NewsService.approve(userId, newsId);
+      const { postId } = req.params;
+      const post = await PostService.approve(userId, postId);
       res.json({
-        message: "News approved successfully",
-        news: news,
+        message: "Post approved successfully",
+        post: post,
       });
     } catch (error: any) {
-      if (error.message === "News is already approved!") {
+      if (error.message === "Post is already approved!") {
         res.status(400).json({
           message: error.message,
         });

@@ -1,24 +1,24 @@
 import path from "path";
 import { prisma } from "../../../core/config/database";
 
-interface NewsImage {
+interface PostImage {
   files: Express.Multer.File[];
   userId: string;
-  newsId: string;
+  postId: string;
 }
 
-export class NewsImageService {
-  static async upload(images: NewsImage) {
+export class PostImageService {
+  static async upload(images: PostImage) {
     return Promise.all(
       images.files.map((file) => {
         const mimeType = path.extname(file.originalname);
-        return prisma.newsImage.create({
+        return prisma.postImage.create({
           data: {
             name: file.filename,
             ext: mimeType,
-            fullpath: `/public/uploads/newsImages/${file.filename}`,
+            fullpath: `/public/uploads/postImages/${file.filename}`,
             userId: images.userId,
-            newsId: images.newsId,
+            postId: images.postId,
           },
         });
       })

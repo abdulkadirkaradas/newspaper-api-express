@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import Seeder from "./Seeder";
 
-class NewsCategorySeed extends Seeder {
+class PostCategorySeed extends Seeder {
   constructor(count: number) {
     super(count);
     this.count = count;
@@ -19,4 +19,4 @@ class NewsCategorySeed extends Seeder {
   }
 }
 
-export default NewsCategorySeed;
+export default PostCategorySeed;

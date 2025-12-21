@@ -1,12 +1,12 @@
 import * as bcrypt from "bcrypt";
 import AnnouncementSeed from "./seeder/announcementSeed";
 import BadgeSeed from "./seeder/badgeSeed";
-import NewsCategorySeed from "./seeder/newsCategorySeed";
-import NewsImageSeed from "./seeder/newsImageSeed";
-import NewsReactionSeed from "./seeder/newsReactionSeed";
-import NewsSeed from "./seeder/newsSeed";
+import PostCategorySeed from "./seeder/postCategorySeed";
+import PostImageSeed from "./seeder/postImageSeed";
+import PostReactionSeed from "./seeder/postReactionSeed";
+import PostSeed from "./seeder/postSeed";
 import NotificationSeed from "./seeder/notificationSeed";
-import OppositeNewsSeed from "./seeder/oppositeNewsSeed";
+import OppositePostSeed from "./seeder/oppositePostsSeed";
 import UserBadgesSeed from "./seeder/userBadgesSeed";
 import UserSeed from "./seeder/userSeed";
 import WarningSeed from "./seeder/warningSeed";
@@ -48,36 +48,36 @@ const main = async () => {
     await prisma.badge.createMany({ data: badgeSeeder.data });
     const badgeRecords: Array<{ id: string } & Record<string, any>> =
       await prisma.badge.findMany();
-    // 4. News Categories
-    const newsCategorySeeder = new NewsCategorySeed(3);
-    await prisma.newsCategory.createMany({ data: newsCategorySeeder.data });
-    const newsCategoryRecords: Array<{ id: string } & Record<string, any>> =
-      await prisma.newsCategory.findMany();
+    // 4. Post Categories
+    const postCategorySeeder = new PostCategorySeed(3);
+    await prisma.postCategory.createMany({ data: postCategorySeeder.data });
+    const postCategoryRecords: Array<{ id: string } & Record<string, any>> =
+      await prisma.postCategory.findMany();
     // 5. Announcements
     const announcementSeeder = new AnnouncementSeed(3);
     await prisma.announcement.createMany({ data: announcementSeeder.data });
-    // 6. News (every user and category)
-    let newsRecords: Array<{ id: string } & Record<string, any>> = [];
+    // 6. Posts (every user and category)
+    let postRecords: Array<{ id: string } & Record<string, any>> = [];
     for (const user of userRecords) {
-      for (const category of newsCategoryRecords) {
-        const newsSeeder = new NewsSeed(2, user.id, category.id);
-        await prisma.news.createMany({ data: newsSeeder.data });
+      for (const category of postCategoryRecords) {
+        const postSeeder = new PostSeed(2, user.id, category.id);
+        await prisma.post.createMany({ data: postSeeder.data });
       }
     }
-    newsRecords = await prisma.news.findMany();
-    // 7. News Images (every user and news)
+    postRecords = await prisma.post.findMany();
+    // 7. Post Images (every user and post)
     for (const user of userRecords) {
-      for (const news of newsRecords) {
-        const newsImageSeeder = new NewsImageSeed(1, user.id, news.id);
-        await prisma.newsImage.createMany({ data: newsImageSeeder.data });
+      for (const post of postRecords) {
+        const postImageSeeder = new PostImageSeed(1, user.id, post.id);
+        await prisma.postImage.createMany({ data: postImageSeeder.data });
       }
     }
-    // 8. News Reactions (every user and news)
+    // 8. Post Reactions (every user and post)
     for (const user of userRecords) {
-      for (const news of newsRecords) {
-        const newsReactionSeeder = new NewsReactionSeed(1, user.id, news.id);
-        await prisma.newsReaction.createMany({
-          data: newsReactionSeeder.data,
+      for (const post of postRecords) {
+        const postReactionSeeder = new PostReactionSeed(1, user.id, post.id);
+        await prisma.postReaction.createMany({
+          data: postReactionSeeder.data,
           skipDuplicates: true,
         });
       }
@@ -99,15 +99,15 @@ const main = async () => {
         await prisma.userBadges.createMany({ data: userBadgesSeeder.data });
       }
     }
-    // 12. OppositeNews (example: first two users and first two news)
-    if (userRecords.length >= 2 && newsRecords.length >= 2) {
-      const oppositeNewsSeeder = new OppositeNewsSeed(1, {
+    // 12. OppositePosts (example: first two users and first two posts)
+    if (userRecords.length >= 2 && postRecords.length >= 2) {
+      const oppositePostSeeder = new OppositePostSeed(1, {
         sourceUserId: userRecords[0].id,
         targetUserId: userRecords[1].id,
-        sourceNewsId: newsRecords[0].id,
-        targetNewsId: newsRecords[1].id,
+        sourcePostId: postRecords[0].id,
+        targetPostId: postRecords[1].id,
       });
-      await prisma.oppositeNews.createMany({ data: oppositeNewsSeeder.data });
+      await prisma.oppositePost.createMany({ data: oppositePostSeeder.data });
     }
     console.log("Database has been seeded.");
   } catch (error) {
