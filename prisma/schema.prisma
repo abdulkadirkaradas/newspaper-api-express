@@ -105,6 +105,9 @@ model News {
   removedBy          String         @default("")
   userId             String
   categoryId         String
+  upvotes            Int            @default(0)
+  downvotes          Int            @default(0)
+  score              Int            @default(0)
   user               User           @relation("UserNews", fields: [userId], references: [id])
   category           NewsCategory   @relation("NewsCategory", fields: [categoryId], references: [id])
   deleted            Boolean        @default(false)
@@ -132,8 +135,7 @@ model NewsImage {
 
 model NewsReaction {
   id        String   @unique @default(cuid())
-  reaction  String
-  type      String
+  value     Int
   userId    String
   newsId    String
   user      User     @relation("UserNewsReaction", fields: [userId], references: [id])
@@ -141,6 +143,8 @@ model NewsReaction {
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  @@unique([newsId, userId])
+  @@index([newsId])
 }
 
 model OppositeNews {

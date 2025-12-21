@@ -15,8 +15,7 @@ class NewsReactionSeed extends Seeder {
   protected generate(): void {
     for (let i = 0; i < this.count; i++) {
       this._data.push({
-        reaction: faker.word.sample(),
-        type: faker.word.sample(),
+        value: faker.number.int({ min: -1, max: 1 }),
         userId: this.ids.userId ?? faker.string.uuid(),
         newsId: this.ids.newsId ?? faker.string.uuid(),
       });

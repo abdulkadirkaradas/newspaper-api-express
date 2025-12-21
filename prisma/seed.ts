@@ -76,7 +76,10 @@ const main = async () => {
     for (const user of userRecords) {
       for (const news of newsRecords) {
         const newsReactionSeeder = new NewsReactionSeed(1, user.id, news.id);
-        await prisma.newsReaction.createMany({ data: newsReactionSeeder.data });
+        await prisma.newsReaction.createMany({
+          data: newsReactionSeeder.data,
+          skipDuplicates: true,
+        });
       }
     }
     // 9. Notifications (every user)
