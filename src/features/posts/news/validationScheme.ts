@@ -17,3 +17,11 @@ export const NewsStatusUpdateRequestSchema = z.object({
   visibility: z.boolean().optional().nullable(),
   deleted: z.boolean().optional().nullable(),
 });
+
+export const NewsVoteRequestSchema = z.object({
+  value: z.coerce.number({ error: "Please enter a number" }).pipe(
+    z.union([z.literal(1), z.literal(-1)], {
+      error: "Please enter 1 or -1",
+    })
+  ),
+});

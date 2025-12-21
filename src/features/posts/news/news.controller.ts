@@ -48,6 +48,26 @@ export class NewsController {
     }
   }
 
+  static async voteNews(
+    req: ExtendedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { newsId } = req.params;
+      const { value } = req.body;
+      const userId = req.user.id;
+      const news = await NewsService.handleVote({
+        newsId,
+        userId,
+        value: Number(value) as 1 | -1,
+      });
+      res.json(news);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async changeNewsStatus(
     req: ExtendedRequest,
     res: Response,

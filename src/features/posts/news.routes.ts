@@ -7,6 +7,7 @@ import {
   NewsCreateRequestSchema,
   NewsStatusUpdateRequestSchema,
   NewsUpdateRequestSchema,
+  NewsVoteRequestSchema,
 } from "./news/validationScheme";
 import { validateRequest } from "../../core/helper/genericValidation";
 import { checkRole } from "../../core/middleware/checkRole";
@@ -26,6 +27,11 @@ router.put(
   "/:newsId/update",
   [validateRequest(NewsUpdateRequestSchema)],
   NewsController.updateNews
+);
+router.post(
+  "/:newsId/vote",
+  [checkRole(["Writer"]), validateRequest(NewsVoteRequestSchema)],
+  NewsController.voteNews
 );
 router.patch(
   "/:newsId/change-status",

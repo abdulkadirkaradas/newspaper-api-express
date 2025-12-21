@@ -1,4 +1,5 @@
 import { prisma } from "../../../core/config/database";
+import { Prisma } from "@prisma/client";
 
 interface News {
   title: string;
@@ -21,6 +22,13 @@ type NewsStatusFilter = {
   visibility?: boolean;
   deleted?: boolean;
 };
+
+type NewsVote = 1 | -1;
+interface NewsVoteParameters {
+  newsId: string;
+  userId: string;
+  value: NewsVote;
+}
 
 export class NewsService {
   static async getNews(roleId: number, filter: NewsFilter) {
@@ -183,6 +191,71 @@ export class NewsService {
         categoryId: true,
         updatedAt: true,
       },
+    });
+  }
+
+  static async handleVote({ userId, newsId, value }: NewsVoteParameters) {
+    return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const existingVote = await tx.newsReaction.findUnique({
+        where: {
+          newsId_userId: { userId, newsId },
+        },
+      });
+
+      if (!existingVote) {
+        await tx.newsReaction.create({
+          data: { userId, newsId, value },
+        });
+
+        await tx.news.update({
+          where: { id: newsId },
+          data: { score: { increment: value } },
+        });
+
+        return { action: "CREATED", value };
+      }
+
+      if (existingVote.deleted) {
+        await tx.newsReaction.update({
+          where: { id: existingVote.id },
+          data: { value, deleted: false },
+        });
+
+        await tx.news.update({
+          where: { id: newsId },
+          data: { score: { increment: value } },
+        });
+
+        return { action: "RESTORED", value };
+      }
+
+      if (existingVote.value === value) {
+        await tx.newsReaction.update({
+          where: { id: existingVote.id },
+          data: { deleted: true },
+        });
+
+        await tx.news.update({
+          where: { id: newsId },
+          data: { score: { decrement: value } },
+        });
+
+        return { action: "REMOVED" };
+      }
+
+      const diff = value - existingVote.value;
+
+      await tx.newsReaction.update({
+        where: { id: existingVote.id },
+        data: { value, deleted: false },
+      });
+
+      await tx.news.update({
+        where: { id: newsId },
+        data: { score: { increment: diff } },
+      });
+
+      return { action: "UPDATED", value };
     });
   }
 }
