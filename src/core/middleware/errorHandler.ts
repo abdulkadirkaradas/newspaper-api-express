@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { Prisma } from "../../generated/prisma";
+import { ZodError } from "zod";
+import { MulterError } from "multer";
+import { $ZodIssue } from "zod/v4/core";
 
 function handlePrismaError(error: any) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -26,22 +29,28 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  let prismaError = handlePrismaError(err);
+  const prismaError = handlePrismaError(err);
   if (prismaError) {
     return res
       .status(prismaError.statusCode)
       .json({ message: prismaError.message });
   }
 
-  if (err.name === "ValidationError") {
-    return res.status(400).json({ message: err.message });
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      message: "Validation error",
+      errors: err.issues.map((issue: $ZodIssue) => ({
+        path: issue.path.join("."),
+        message: issue.message,
+      })),
+    });
   }
 
-  if (err.name === "MulterError") {
+  if (err instanceof MulterError) {
     return res.status(400).json({
       code: err.code,
       message: err.message,
-      field: err.field
+      field: err.field,
     });
   }
 
