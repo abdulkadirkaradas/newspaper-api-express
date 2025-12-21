@@ -1,11 +1,11 @@
-import { NewsCategoryService } from "./news.category.service";
+import { PostCategoryService } from "./post.category.service";
 import { NextFunction, Request, Response } from "express";
 
-export class NewsCategoryController {
+export class PostCategoryController {
   static async getCategories(req: Request, res: Response, next: NextFunction) {
     try {
       const { filter } = req.body;
-      const categories = await NewsCategoryService.getCategory(filter);
+      const categories = await PostCategoryService.getCategory(filter);
       res.json(categories);
     } catch (error) {
       next(error);
@@ -15,7 +15,7 @@ export class NewsCategoryController {
   static async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, description } = req.body;
-      const category = await NewsCategoryService.createCategory({
+      const category = await PostCategoryService.createCategory({
         name,
         description,
       });
@@ -29,7 +29,7 @@ export class NewsCategoryController {
     try {
       const { id } = req.params;
       const { name, description } = req.body;
-      const category = await NewsCategoryService.updateCategory(id, {
+      const category = await PostCategoryService.updateCategory(id, {
         name: name ?? null,
         description: description ?? null,
       });
@@ -47,7 +47,7 @@ export class NewsCategoryController {
         res.status(400).json({ message: "Please provide delete status!" });
       }
 
-      const category = await NewsCategoryService.deleteCategory(id, deleted);
+      const category = await PostCategoryService.deleteCategory(id, deleted);
       res.json({ id: category.id, message: "Category updated successfull" });
     } catch (error) {
       next(error);
