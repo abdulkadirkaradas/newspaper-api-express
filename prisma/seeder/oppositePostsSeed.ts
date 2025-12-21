@@ -2,24 +2,24 @@ import { faker } from "@faker-js/faker";
 
 import Seeder from "./Seeder";
 
-interface OppositeNews {
+interface OppositePost {
   sourceUserId: string;
   targetUserId: string;
-  sourceNewsId: string;
-  targetNewsId: string;
+  sourcePostId: string;
+  targetPostId: string;
 }
 
-class OppositeNewsSeed extends Seeder {
-  private ids: OppositeNews;
+class OppositePostSeed extends Seeder {
+  private ids: OppositePost;
 
-  constructor(count: number, idBag: OppositeNews) {
+  constructor(count: number, idBag: OppositePost) {
     super(count);
     this.count = count;
     this.ids = {
       sourceUserId: idBag.sourceUserId,
       targetUserId: idBag.targetUserId,
-      sourceNewsId: idBag.sourceNewsId,
-      targetNewsId: idBag.targetNewsId,
+      sourcePostId: idBag.sourcePostId,
+      targetPostId: idBag.targetPostId,
     };
     this.generate();
   }
@@ -29,12 +29,12 @@ class OppositeNewsSeed extends Seeder {
       this._data.push({
         sourceUserId: this.ids.sourceUserId ?? faker.string.uuid(),
         targetUserId: this.ids.targetUserId ?? faker.string.uuid(),
-        sourceNewsId: this.ids.sourceNewsId ?? faker.string.uuid(),
-        targetNewsId: this.ids.targetNewsId ?? faker.string.uuid(),
+        sourcePostId: this.ids.sourcePostId ?? faker.string.uuid(),
+        targetPostId: this.ids.targetPostId ?? faker.string.uuid(),
         deleted: faker.datatype.boolean(),
       });
     }
   }
 }
 
-export default OppositeNewsSeed;
+export default OppositePostSeed;
