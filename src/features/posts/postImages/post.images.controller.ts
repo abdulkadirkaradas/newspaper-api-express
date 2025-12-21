@@ -1,8 +1,8 @@
-import { NewsImageService } from "./news.images.service";
+import { PostImageService } from "./post.images.service";
 import { ExtendedRequest } from "../../../core/helper/genericTypes";
 import { NextFunction, Request, Response } from "express";
 
-export class NewsImageController {
+export class PostImageController {
   static async uploadImages(
     req: ExtendedRequest,
     res: Response,
@@ -10,7 +10,7 @@ export class NewsImageController {
   ) {
     try {
       const userId = req.user?.id;
-      const { newsId } = req.params;
+      const { postId } = req.params;
       const files = req.files as Express.Multer.File[];
 
       if (!files || files.length === 0) {
@@ -18,10 +18,10 @@ export class NewsImageController {
         return;
       }
 
-      const savedFiles = await NewsImageService.upload({
+      const savedFiles = await PostImageService.upload({
         files: files,
         userId: userId,
-        newsId: newsId,
+        postId: postId,
       });
 
       let message = savedFiles
