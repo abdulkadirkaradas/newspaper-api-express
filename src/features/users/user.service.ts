@@ -44,7 +44,7 @@ export class UserService {
             },
           },
         },
-        news: {
+        post: {
           where: { deleted: false },
           include: {
             images: {
@@ -62,10 +62,10 @@ export class UserService {
                 createdAt: true,
               },
             },
-            oppositeNewsTarget: {
+            oppositePostTarget: {
               where: { deleted: false },
               include: {
-                targetNews: {
+                targetPost: {
                   select: {
                     id: true,
                     title: true,
