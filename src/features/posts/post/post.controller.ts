@@ -24,9 +24,9 @@ export class PostController {
     next: NextFunction
   ) {
     try {
-      const data = { ...req.body, userId: req.user.id };
-      const post = await PostService.create(data);
-      res.json(post);
+      const data = { ...req.body, authorId: req.user.id };
+      const createdPost = await PostService.create(data);
+      res.json(createdPost);
     } catch (error) {
       next(error);
     }
@@ -41,8 +41,8 @@ export class PostController {
       const { postId } = req.params;
       const data = req.body;
       const roleId = req.user.roleId;
-      const post = await PostService.update(roleId, postId, data);
-      res.json(post);
+      const updatedPost = await PostService.update(roleId, postId, data);
+      res.json(updatedPost);
     } catch (error) {
       next(error);
     }
@@ -56,13 +56,13 @@ export class PostController {
     try {
       const { postId } = req.params;
       const { value } = req.body;
-      const userId = req.user.id;
-      const post = await PostService.handleVote({
+      const authorId = req.user.id;
+      const votedPost = await PostService.handleVote({
         postId,
-        userId,
+        authorId,
         value: Number(value) as 1 | -1,
       });
-      res.json(post);
+      res.json(votedPost);
     } catch (error) {
       next(error);
     }
@@ -74,13 +74,17 @@ export class PostController {
     next: NextFunction
   ) {
     try {
-      const userId = req.user?.id;
+      const authorId = req.user?.id;
       const { postId } = req.params;
       const { filter } = req.body;
-      const post = await PostService.changeStatus(userId, postId, filter);
+      const updatedPost = await PostService.changeStatus(
+        authorId,
+        postId,
+        filter
+      );
       res.json({
         message: "Post status updated successfully",
-        post: post,
+        post: updatedPost,
       });
     } catch (error) {
       next(error);
@@ -93,12 +97,12 @@ export class PostController {
     next: NextFunction
   ) {
     try {
-      const userId = req.user?.id;
+      const authorId = req.user?.id;
       const { postId } = req.params;
-      const post = await PostService.approve(userId, postId);
+      const approvedPost = await PostService.approve(authorId, postId);
       res.json({
         message: "Post approved successfully",
-        post: post,
+        post: approvedPost,
       });
     } catch (error: any) {
       if (error.message === "Post is already approved!") {
