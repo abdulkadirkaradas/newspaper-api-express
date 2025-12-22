@@ -9,7 +9,6 @@ export class PostImageController {
     next: NextFunction
   ) {
     try {
-      const userId = req.user?.id;
       const { postId } = req.params;
       const files = req.files as Express.Multer.File[];
 
@@ -20,7 +19,6 @@ export class PostImageController {
 
       const savedFiles = await PostImageService.upload({
         files: files,
-        userId: userId,
         postId: postId,
       });
 

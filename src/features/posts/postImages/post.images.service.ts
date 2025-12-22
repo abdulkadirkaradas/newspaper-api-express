@@ -3,7 +3,6 @@ import { prisma } from "../../../core/config/database";
 
 interface PostImage {
   files: Express.Multer.File[];
-  userId: string;
   postId: string;
 }
 
@@ -17,7 +16,6 @@ export class PostImageService {
             name: file.filename,
             ext: mimeType,
             fullpath: `/public/uploads/postImages/${file.filename}`,
-            userId: images.userId,
             postId: images.postId,
           },
         });
