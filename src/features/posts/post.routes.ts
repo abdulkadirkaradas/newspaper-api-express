@@ -19,7 +19,7 @@ const router = Router();
  */
 router.get("/", PostController.getPost);
 router.post(
-  "/:userId/create",
+  "/",
   [validateRequest(PostCreateRequestSchema)],
   PostController.createPost
 );

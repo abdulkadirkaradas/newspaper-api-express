@@ -4,13 +4,14 @@ import { Prisma } from "@prisma/client";
 interface Post {
   title: string;
   content: string;
-  categoryId: string;
-  userId: string;
+  opposedToId: string | null;
+  categoryId: string | null;
+  authorId: string;
 }
 
 type PostFilter = {
   id?: string;
-  userId?: string;
+  authorId?: string;
   categoryId?: string;
   priority?: number;
   pinned?: boolean;
@@ -26,7 +27,7 @@ type PostStatusFilter = {
 type PostVote = 1 | -1;
 interface PostVoteParameters {
   postId: string;
-  userId: string;
+  authorId: string;
   value: PostVote;
 }
 
@@ -35,10 +36,10 @@ export class PostService {
     // Define allowed filter keys based on user role
     const allowedKeys =
       roleId === 3
-        ? (["id", "userId", "categoryId"] as (keyof PostFilter)[])
+        ? (["id", "authorId", "categoryId"] as (keyof PostFilter)[])
         : ([
             "id",
-            "userId",
+            "authorId",
             "categoryId",
             "priority",
             "pinned",
@@ -64,7 +65,7 @@ export class PostService {
       };
     }
 
-    prisma
+    prisma;
     return await prisma.post.findMany({
       where: where,
       orderBy: {
@@ -83,33 +84,23 @@ export class PostService {
             name: true,
           },
         },
-        oppositePostTarget: {
-          where: { deleted: false },
-          select: {
-            id: true,
-            targetPost: {
+        counterPosts: {
+          omit: {
+            approvedBy: true,
+            removedBy: true,
+          },
+          include: {
+            author: {
               select: {
                 id: true,
-                title: true,
-                content: true,
-                category: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-                createdAt: true,
-              },
-            },
-            targetUser: {
-              select: {
-                id: true,
+                username: true,
                 name: true,
                 lastname: true,
-                username: true,
               },
             },
-            createdAt: true,
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         },
         images: {
@@ -124,20 +115,32 @@ export class PostService {
   }
 
   static async create(data: Post) {
-    return await prisma.post.create({ data });
+    return await prisma.post.create({
+      data: {
+        title: data.title,
+        content: data.content,
+        opposedToId: data.opposedToId ?? null,
+        categoryId: data.categoryId ?? null,
+        authorId: data.authorId,
+      },
+    });
   }
 
   static async update(
     roleId: number,
     id: string,
-    data: Partial<Omit<Post, "userId">>
+    data: Partial<Omit<Post, "authorId" | "opposedToId">>
   ) {
     const updateData: Partial<typeof data> = { ...data };
     if (roleId === 3 && updateData.categoryId) delete updateData.categoryId;
 
     return await prisma.post.update({
       where: { id },
-      data: updateData,
+      data: {
+        title: updateData.title,
+        content: updateData.content,
+        categoryId: updateData.categoryId ?? null,
+      },
       select: {
         id: true,
         title: true,
@@ -149,11 +152,11 @@ export class PostService {
   }
 
   static async changeStatus(
-    userId: string,
+    authorId: string,
     id: string,
     status: Partial<PostStatusFilter>
   ) {
-    const data = { ...status, removedBy: status.deleted ? userId : "" };
+    const data = { ...status, removedBy: status.deleted ? authorId : "" };
 
     return await prisma.post.update({
       where: { id },
@@ -171,7 +174,7 @@ export class PostService {
     });
   }
 
-  static async approve(userId: string, id: string) {
+  static async approve(authorId: string, id: string) {
     const checkPost = await prisma.post.findUnique({
       where: { id },
     });
@@ -184,7 +187,7 @@ export class PostService {
 
     return await prisma.post.update({
       where: { id: id },
-      data: { visibility: true, approvedBy: userId },
+      data: { visibility: true, approvedBy: authorId },
       select: {
         id: true,
         title: true,
@@ -195,17 +198,17 @@ export class PostService {
     });
   }
 
-  static async handleVote({ userId, postId, value }: PostVoteParameters) {
+  static async handleVote({ authorId, postId, value }: PostVoteParameters) {
     return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const existingVote = await tx.postReaction.findUnique({
         where: {
-          postId_userId: { userId, postId },
+          postId_authorId: { authorId, postId },
         },
       });
 
       if (!existingVote) {
         await tx.postReaction.create({
-          data: { userId, postId, value },
+          data: { authorId, postId, value },
         });
 
         await tx.post.update({

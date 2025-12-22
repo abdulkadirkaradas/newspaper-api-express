@@ -18,7 +18,6 @@ class PostImageSeed extends Seeder {
         name: faker.word.sample(),
         ext: faker.system.fileExt(),
         fullpath: faker.system.filePath(),
-        userId: this.ids.userId ?? faker.string.uuid(),
         postId: this.ids.postId ?? faker.string.uuid(),
       });
     }

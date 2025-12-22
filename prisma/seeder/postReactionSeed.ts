@@ -16,7 +16,7 @@ class PostReactionSeed extends Seeder {
     for (let i = 0; i < this.count; i++) {
       this._data.push({
         value: faker.number.int({ min: -1, max: 1 }),
-        userId: this.ids.userId ?? faker.string.uuid(),
+        authorId: this.ids.userId ?? faker.string.uuid(),
         postId: this.ids.postId ?? faker.string.uuid(),
       });
     }

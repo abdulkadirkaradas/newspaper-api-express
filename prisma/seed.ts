@@ -6,7 +6,6 @@ import PostImageSeed from "./seeder/postImageSeed";
 import PostReactionSeed from "./seeder/postReactionSeed";
 import PostSeed from "./seeder/postSeed";
 import NotificationSeed from "./seeder/notificationSeed";
-import OppositePostSeed from "./seeder/oppositePostsSeed";
 import UserBadgesSeed from "./seeder/userBadgesSeed";
 import UserSeed from "./seeder/userSeed";
 import WarningSeed from "./seeder/warningSeed";
@@ -60,7 +59,7 @@ const main = async () => {
     let postRecords: Array<{ id: string } & Record<string, any>> = [];
     for (const user of userRecords) {
       for (const category of postCategoryRecords) {
-        const postSeeder = new PostSeed(2, user.id, category.id);
+        const postSeeder = new PostSeed(1, user.id, category.id);
         await prisma.post.createMany({ data: postSeeder.data });
       }
     }
@@ -98,16 +97,6 @@ const main = async () => {
         const userBadgesSeeder = new UserBadgesSeed(1, user.id, badge.id);
         await prisma.userBadges.createMany({ data: userBadgesSeeder.data });
       }
-    }
-    // 12. OppositePosts (example: first two users and first two posts)
-    if (userRecords.length >= 2 && postRecords.length >= 2) {
-      const oppositePostSeeder = new OppositePostSeed(1, {
-        sourceUserId: userRecords[0].id,
-        targetUserId: userRecords[1].id,
-        sourcePostId: postRecords[0].id,
-        targetPostId: postRecords[1].id,
-      });
-      await prisma.oppositePost.createMany({ data: oppositePostSeeder.data });
     }
     console.log("Database has been seeded.");
   } catch (error) {

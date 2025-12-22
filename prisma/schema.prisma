@@ -21,28 +21,24 @@ model Role {
 }
 
 model User {
-  id                 String         @id @default(cuid())
-  name               String?
-  lastname           String?
-  username           String         @unique
-  email              String         @unique
-  emailVerifiedAt    DateTime?      @db.Timestamptz(3)
-  password           String
-  blocked            Boolean        @default(false)
-  roleId             Int
-  role               Role           @relation("UserRole", fields: [roleId], references: [id])
-  deleted            Boolean        @default(false)
-  createdAt          DateTime       @default(now()) @db.Timestamptz(3)
-  updatedAt          DateTime       @updatedAt @db.Timestamptz(3)
-  notifications      Notification[] @relation("UserNotification")
-  warnings           Warning[]      @relation("UserWarning")
-  posts              Post[]         @relation("UserPost")
-  postImages         PostImage[]    @relation("UserPostImage")
-  postReactions      PostReaction[] @relation("UserPostReaction")
-  oppositePostSource OppositePost[] @relation("SourceUser")
-  oppositePostTarget OppositePost[] @relation("TargetUser")
-  userBadges         UserBadges[]   @relation("UserBadges")
-  OppositePost       OppositePost[]
+  id              String         @id @default(cuid())
+  name            String?
+  lastname        String?
+  username        String         @unique
+  email           String         @unique
+  emailVerifiedAt DateTime?      @db.Timestamptz(3)
+  password        String
+  blocked         Boolean        @default(false)
+  roleId          Int
+  role            Role           @relation("UserRole", fields: [roleId], references: [id])
+  deleted         Boolean        @default(false)
+  createdAt       DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime       @updatedAt @db.Timestamptz(3)
+  notifications   Notification[] @relation("UserNotification")
+  warnings        Warning[]      @relation("UserWarning")
+  posts           Post[]         @relation("UserPost")
+  postReactions   PostReaction[] @relation("UserPostReaction")
+  userBadges      UserBadges[]   @relation("UserBadges")
 }
 
 model Notification {
@@ -94,29 +90,30 @@ model PostCategory {
 }
 
 model Post {
-  id                 String         @unique @default(cuid())
-  title              String
-  content            String
-  priority           Int            @default(3)
-  pinned             Boolean        @default(false)
-  visibility         Boolean        @default(false)
-  opposition         Boolean        @default(false)
-  approvedBy         String         @default("")
-  removedBy          String         @default("")
-  userId             String
-  categoryId         String
-  upvotes            Int            @default(0)
-  downvotes          Int            @default(0)
-  score              Int            @default(0)
-  user               User           @relation("UserPost", fields: [userId], references: [id])
-  category           PostCategory   @relation("PostCategory", fields: [categoryId], references: [id])
-  deleted            Boolean        @default(false)
-  createdAt          DateTime       @default(now()) @db.Timestamptz(3)
-  updatedAt          DateTime       @updatedAt @db.Timestamptz(3)
-  images             PostImage[]    @relation("PostImage")
-  reactions          PostReaction[] @relation("PostReaction")
-  oppositePostSource OppositePost[] @relation("SourcePost")
-  oppositePostTarget OppositePost[] @relation("TargetPost")
+  id           String         @id @default(cuid())
+  title        String
+  content      String         @db.Text
+  pinned       Boolean        @default(false)
+  visibility   Boolean        @default(false)
+  approvedBy   String         @default("")
+  removedBy    String         @default("")
+  opposedToId  String?
+  opposedTo    Post?          @relation("PostDebate", fields: [opposedToId], references: [id])
+  counterPosts Post[]         @relation("PostDebate")
+  authorId     String
+  author       User           @relation("UserPost", fields: [authorId], references: [id])
+  categoryId   String?
+  category     PostCategory?  @relation("PostCategory", fields: [categoryId], references: [id])
+  upvotes      Int            @default(0)
+  downvotes    Int            @default(0)
+  score        Int            @default(0)
+  deleted      Boolean        @default(false)
+  createdAt    DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime       @updatedAt @db.Timestamptz(3)
+  images       PostImage[]    @relation("PostImage")
+  reactions    PostReaction[] @relation("PostReaction")
+
+  @@index([opposedToId])
 }
 
 model PostImage {
@@ -124,9 +121,7 @@ model PostImage {
   name      String
   ext       String
   fullpath  String
-  userId    String
   postId    String
-  user      User     @relation("UserPostImage", fields: [userId], references: [id])
   post      Post     @relation("PostImage", fields: [postId], references: [id])
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
@@ -134,34 +129,18 @@ model PostImage {
 }
 
 model PostReaction {
-  id        String   @unique @default(cuid())
+  id        String   @id @default(cuid())
   value     Int
-  userId    String
+  authorId  String
   postId    String
-  user      User     @relation("UserPostReaction", fields: [userId], references: [id])
+  author    User     @relation("UserPostReaction", fields: [authorId], references: [id])
   post      Post     @relation("PostReaction", fields: [postId], references: [id])
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
-  @@unique([postId, userId])
-  @@index([postId])
-}
 
-model OppositePost {
-  id           String   @id @default(cuid())
-  sourceUserId String
-  targetUserId String
-  sourcePostId String
-  targetPostId String
-  sourceUser   User     @relation("SourceUser", fields: [sourceUserId], references: [id])
-  targetUser   User     @relation("TargetUser", fields: [targetUserId], references: [id])
-  sourcePost   Post     @relation("SourcePost", fields: [sourcePostId], references: [id])
-  targetPost   Post     @relation("TargetPost", fields: [targetPostId], references: [id])
-  deleted      Boolean  @default(false)
-  createdAt    DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
-  User         User?    @relation(fields: [userId], references: [id])
-  userId       String?
+  @@unique([postId, authorId])
+  @@index([postId])
 }
 
 model UserBadges {

@@ -18,11 +18,10 @@ class PostSeed extends Seeder {
       this._data.push({
         title: faker.lorem.sentence(),
         content: faker.lorem.paragraphs(3),
-        priority: randomInt(1, 3),
         pinned: faker.datatype.boolean(),
         visibility: faker.datatype.boolean(),
         approvedBy: this.ids.userId ?? faker.string.uuid(),
-        userId: this.ids.userId ?? faker.string.uuid(),
+        authorId: this.ids.userId ?? faker.string.uuid(),
         categoryId: this.ids.categoryId ?? faker.string.uuid(),
       });
     }
