@@ -1,15 +1,42 @@
 import { z } from "zod";
 
-export const PostCreateRequestSchema = z.object({
-  title: z.string().max(100),
-  content: z.string().max(1200),
-  categoryId: z.cuid(),
-});
+export const PostCreateRequestSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, "Title must be at least 3 characters long")
+      .max(100, "Title must be at most 100 characters long"),
+    content: z
+      .string()
+      .min(100, "Content must be at least 100 characters long")
+      .max(5000, "Content must be at most 5000 characters long"),
+    opposedToId: z.cuid().optional(),
+    categoryId: z.cuid().optional(),
+  })
+  .refine((data) => !(data.opposedToId && data.categoryId), {
+    message: "You can't send both opposedToId and categoryId at the same time.",
+    path: ["opposedToId", "categoryId"],
+  })
+  .refine((data) => data.opposedToId || data.categoryId, {
+    message:
+      "You must send either opposedToId or categoryId to perform this action.",
+    path: ["opposedToId", "categoryId"],
+  });
 
 export const PostUpdateRequestSchema = z.object({
-  title: z.string().max(100).optional().nullable(),
-  content: z.string().max(1200).optional().nullable(),
-  categoryId: z.cuid().optional().nullable(),
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters long")
+    .max(100, "Title must be at most 100 characters long")
+    .optional()
+    .nullable(),
+  content: z
+    .string()
+    .min(100, "Content must be at least 100 characters long")
+    .max(5000, "Content must be at most 5000 characters long")
+    .optional()
+    .nullable(),
+  categoryId: z.cuid("Incorrect category ID").optional().nullable(),
 });
 
 export const PostStatusUpdateRequestSchema = z.object({
