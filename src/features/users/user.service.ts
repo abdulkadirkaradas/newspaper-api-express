@@ -12,12 +12,6 @@ interface UpdateUserStatus {
 
 export class UserService {
   static async getUser(filter: UserDefaultFilter) {
-    if (!filter.id || !filter.email || !filter.username) {
-      return {
-        filter: "failed"
-      };
-    }
-
     return await prisma.user.findUnique({
       where: {
         id: filter.id,
@@ -44,8 +38,12 @@ export class UserService {
             },
           },
         },
-        post: {
+        posts: {
           where: { deleted: false },
+          omit: {
+            approvedBy: true,
+            removedBy: true,
+          },
           include: {
             images: {
               select: {
@@ -57,26 +55,23 @@ export class UserService {
             reactions: {
               select: {
                 id: true,
-                reaction: true,
-                type: true,
+                value: true,
                 createdAt: true,
               },
             },
-            oppositePostTarget: {
-              where: { deleted: false },
+            counterPosts: {
               include: {
-                targetPost: {
-                  select: {
-                    id: true,
-                    title: true,
-                  },
-                },
-                targetUser: {
+                author: {
                   select: {
                     id: true,
                     username: true,
+                    name: true,
+                    lastname: true,
                   },
                 },
+              },
+              orderBy: {
+                createdAt: "desc",
               },
             },
           },

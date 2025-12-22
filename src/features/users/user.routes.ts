@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { UserController } from "./user.controller";
 import { checkRole } from "../../core/middleware/checkRole";
+import { UserFilterSchema } from "./validationScheme";
+import { validateRequest } from "../../core/helper/genericValidation";
 
 const router = Router();
 
-router.get("/", UserController.getUser);
+router.get("/", [validateRequest(UserFilterSchema)], UserController.getUser);
 router.put(
   "/:id/update-role",
   [checkRole(["Admin"])],
