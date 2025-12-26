@@ -2,6 +2,7 @@ import { WarningService } from "./warning.service";
 import { ExtendedRequest } from "../../core/helper/genericTypes";
 import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
+import { MESSAGES } from "./constants";
 
 export class WarningController {
   static async getAllWarnings(
@@ -49,7 +50,10 @@ export class WarningController {
         reason,
         warningLevel,
       });
-      res.status(HTTP_STATUS.CREATED).json(newWarning);
+      res.status(HTTP_STATUS.CREATED).json({
+        message: MESSAGES.RESPONSE.CREATED,
+        newWarning,
+      });
     } catch (error) {
       next(error);
     }
@@ -68,7 +72,10 @@ export class WarningController {
         reason,
         warningLevel,
       });
-      res.status(HTTP_STATUS.OK).json(updatedWarning);
+      res.status(HTTP_STATUS.OK).json({
+        message: MESSAGES.RESPONSE.UPDATED,
+        updatedWarning,
+      });
     } catch (error) {
       next(error);
     }
@@ -83,8 +90,8 @@ export class WarningController {
       const { id } = req.params;
       const deletedWarning = await WarningService.deleteWarning(id);
       res.status(HTTP_STATUS.OK).json({
+        message: MESSAGES.RESPONSE.DELETED,
         warningId: deletedWarning.id,
-        message: "Warning deleted successfully.",
       });
     } catch (error) {
       next(error);

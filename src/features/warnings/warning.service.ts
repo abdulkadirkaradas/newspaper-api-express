@@ -1,5 +1,6 @@
 import { prisma } from "../../core/config/database";
 import { ROLE } from "../../core/helper/constants/role.constants";
+import { MESSAGES } from "./constants";
 
 interface Warning {
   userId: string;
@@ -21,7 +22,7 @@ type WarningAdminFilter = WarningDefaultFilter & {
 export class WarningService {
   static async getAllWarnings(role: number, filter: WarningAdminFilter) {
     if (role !== ROLE.ADMIN) {
-      return { message: "Only admins can access all warnings." };
+      return { message: MESSAGES.ERROR.UNSIFFICIENT_ROLE };
     }
 
     return await prisma.warning.findMany({
@@ -49,7 +50,7 @@ export class WarningService {
       });
     }
 
-    return { message: "Please provide user or warning ID!" };
+    return { message: MESSAGES.FILTER.ID_REQUIRED };
   }
 
   static async createWarning(data: Warning) {
