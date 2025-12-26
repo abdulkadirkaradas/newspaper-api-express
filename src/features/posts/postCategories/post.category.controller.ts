@@ -1,3 +1,4 @@
+import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
 import { PostCategoryService } from "./post.category.service";
 import { NextFunction, Request, Response } from "express";
 
@@ -6,7 +7,7 @@ export class PostCategoryController {
     try {
       const { filter } = req.body;
       const categories = await PostCategoryService.getCategory(filter);
-      res.json(categories);
+      res.status(HTTP_STATUS.OK).json(categories);
     } catch (error) {
       next(error);
     }
@@ -19,7 +20,7 @@ export class PostCategoryController {
         name,
         description,
       });
-      res.json(category);
+      res.status(HTTP_STATUS.CREATED).json(category);
     } catch (error) {
       next(error);
     }
@@ -33,7 +34,9 @@ export class PostCategoryController {
         name: name ?? null,
         description: description ?? null,
       });
-      res.json({ id: category.id, message: "Category updated successfull" });
+      res
+        .status(HTTP_STATUS.OK)
+        .json({ id: category.id, message: "Category updated successfull" });
     } catch (error) {
       next(error);
     }
@@ -44,11 +47,15 @@ export class PostCategoryController {
       const { id } = req.params;
       const { deleted } = req.body;
       if (deleted === undefined) {
-        res.status(400).json({ message: "Please provide delete status!" });
+        res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({ message: "Please provide delete status!" });
       }
 
       const category = await PostCategoryService.deleteCategory(id, deleted);
-      res.json({ id: category.id, message: "Category updated successfull" });
+      res
+        .status(HTTP_STATUS.OK)
+        .json({ id: category.id, message: "Category updated successfull" });
     } catch (error) {
       next(error);
     }

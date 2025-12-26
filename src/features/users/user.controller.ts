@@ -1,3 +1,4 @@
+import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
 import { ExtendedRequest } from "../../core/helper/genericTypes";
 import { UserService } from "./user.service";
 import { NextFunction, Request, Response } from "express";
@@ -7,7 +8,7 @@ export class UserController {
     try {
       const { filter } = req.body;
       const user = await UserService.getUser(filter);
-      return res.json(user);
+      return res.status(HTTP_STATUS.OK).json(user);
     } catch (error) {
       next(error);
     }
@@ -18,7 +19,7 @@ export class UserController {
       const { id } = req.params;
       const { roleId } = req.body;
       const updatedUser = await UserService.updateRole(id, roleId);
-      return res.json({
+      return res.status(HTTP_STATUS.OK).json({
         userId: updatedUser.id,
         message: "User role updated successfully",
       });
@@ -41,13 +42,15 @@ export class UserController {
         const updateData = { blocked, ...(roleId === 1 && { deleted }) };
         const updatedUser = await UserService.updateUserStatus(id, updateData);
 
-        return res.json({
+        return res.status(HTTP_STATUS.OK).json({
           userId: updatedUser?.id,
           message: `User status updated successfully`,
         });
       }
 
-      return res.status(403).json({ message: "Insufficient permissions" });
+      return res
+        .status(HTTP_STATUS.FORBIDDEN)
+        .json({ message: "Insufficient permissions" });
     } catch (error) {
       next(error);
     }

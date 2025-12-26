@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AnnouncementService } from "./announcement.service";
+import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
 
 export class AnnouncementController {
   static async getAllAnnouncements(
@@ -14,7 +15,7 @@ export class AnnouncementController {
         filter,
         id ?? null
       );
-      res.json(announcements);
+      res.status(HTTP_STATUS.OK).json(announcements);
     } catch (error) {
       next(error);
     }
@@ -29,7 +30,9 @@ export class AnnouncementController {
       const announcement = await AnnouncementService.createAnnouncement(
         req.body
       );
-      res.status(201).json({ success: true, data: announcement });
+      res
+        .status(HTTP_STATUS.CREATED)
+        .json({ success: true, data: announcement });
     } catch (error) {
       next(error);
     }

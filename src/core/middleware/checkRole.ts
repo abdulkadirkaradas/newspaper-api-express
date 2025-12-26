@@ -2,6 +2,7 @@ import { Response, NextFunction } from "express";
 import { prisma } from "../config/database";
 import { verifyRole } from "../helper/userRoles";
 import { ExtendedRequest } from "../helper/genericTypes";
+import { HTTP_STATUS } from "../helper/constants/http-status.constants";
 
 export const checkRole = (role: string[]) => {
   return async (req: ExtendedRequest, res: Response, next: NextFunction) => {
@@ -13,7 +14,7 @@ export const checkRole = (role: string[]) => {
     });
 
     if (!verifyRole(userRole?.roleId ?? 0, role)) {
-      res.status(401).json({
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
         title: "Unauthorized Request",
         message: "Current user are not granted for this operation",
       });

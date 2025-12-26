@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { ExtendedRequest } from "../../helper/genericTypes";
 import { getUserInformation } from "../../config/database";
 import { generateAccessToken } from "../../helper/jwt/generateTokens";
+import { HTTP_STATUS } from "../../helper/constants/http-status.constants";
 
 const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? "";
 const JWT_SECRET_REFRESH: string = process.env.JWT_SECRET_REFRESH ?? "";
@@ -20,7 +21,7 @@ export const checkAuthenticate = (
   const token: string = header && header.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized Action" });
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: "Unauthorized Action" });
   }
 
   jwt.verify(token, JWT_SECRET_ACCESS, async (error: any, user: any) => {
@@ -28,7 +29,7 @@ export const checkAuthenticate = (
       const refreshToken = getTokenFromRequest(req);
 
       if (!refreshToken) {
-        return res.status(403).json({
+        return res.status(HTTP_STATUS.FORBIDDEN).json({
           message: "Please provide the refresh token to renew the access token",
         });
       }
@@ -39,7 +40,7 @@ export const checkAuthenticate = (
         (refreshError: any, refreshUser: any) => {
           if (refreshError) {
             return res
-              .status(403)
+              .status(HTTP_STATUS.FORBIDDEN)
               .json({ message: "Invalid or expired refresh token" });
           }
 
@@ -47,7 +48,7 @@ export const checkAuthenticate = (
             id: refreshUser?.userId,
           });
 
-          return res.json({ accessToken: newAccessToken });
+          return res.status(HTTP_STATUS.OK).json({ accessToken: newAccessToken });
         }
       );
     }
