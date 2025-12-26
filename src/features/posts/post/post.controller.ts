@@ -116,7 +116,7 @@ export class PostController {
         post: approvedPost,
       });
     } catch (error: any) {
-      if (error.message === "Post is already approved!") {
+      if (error.message === MESSAGES.ERROR.POST_ALREADY_APPROVED) {
         res.status(HTTP_STATUS.BAD_REQUEST).json({
           message: error.message,
         });
