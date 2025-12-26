@@ -16,7 +16,7 @@ class PostImageSeed extends Seeder {
     for (let i = 0; i < this.count; i++) {
       this._data.push({
         name: faker.word.sample(),
-        ext: faker.system.fileExt(),
+        mimeType: faker.system.fileExt(),
         fullpath: faker.system.filePath(),
         postId: this.ids.postId ?? faker.string.uuid(),
       });
