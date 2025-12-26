@@ -14,7 +14,7 @@ export class PostImageService {
         return prisma.postImage.create({
           data: {
             name: file.filename,
-            ext: mimeType,
+            mimeType: mimeType,
             fullpath: `/public/uploads/postImages/${file.filename}`,
             postId: images.postId,
           },
