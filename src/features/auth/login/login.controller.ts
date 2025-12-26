@@ -23,7 +23,7 @@ export class LoginController {
       const decoded = req.user;
       const user = await LoginService.user(decoded?.id);
 
-      res.status(HTTP_STATUS.OK).json({ message: "Authenticated", user });
+      res.status(HTTP_STATUS.OK).json(user);
     } catch (err: any) {
       next(err);
     }
