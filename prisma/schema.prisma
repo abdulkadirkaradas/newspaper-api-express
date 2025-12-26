@@ -71,7 +71,7 @@ model Badge {
   name        String
   description String
   type        String
-  ext         String
+  mimeType    String
   fullpath    String
   deleted     Boolean      @default(false)
   createdAt   DateTime     @default(now()) @db.Timestamptz(3)
@@ -119,7 +119,7 @@ model Post {
 model PostImage {
   id        String   @id @default(cuid())
   name      String
-  ext       String
+  mimeType  String
   fullpath  String
   postId    String
   post      Post     @relation("PostImage", fields: [postId], references: [id])

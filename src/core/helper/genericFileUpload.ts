@@ -17,15 +17,15 @@ export function createMulter(dir: string, ids?: CompoundIds) {
       cb(null, dir);
     },
     filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      const name = path.basename(file.originalname, ext);
+      const mimeType = path.extname(file.originalname);
+      const name = path.basename(file.originalname, mimeType);
       const now = new Date();
       const compoundKey =
         ids?.userId !== undefined && ids?.relId !== undefined
           ? `${ids.userId.substring(0, 12)}_${ids.relId.substring(0, 12)}_`
           : "";
 
-      const newFilename = `${now.toISOString()}_${compoundKey}${name}${ext}`;
+      const newFilename = `${now.toISOString()}_${compoundKey}${name}${mimeType}`;
       cb(null, newFilename);
     },
   });

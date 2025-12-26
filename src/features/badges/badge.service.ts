@@ -4,7 +4,7 @@ interface Badge {
   name: string;
   description: string;
   type: string;
-  ext: string;
+  mimeType: string;
   fullpath: string;
 }
 
