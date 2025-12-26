@@ -1,6 +1,7 @@
 import multer from "multer";
 import fs from "fs";
 import path from "path";
+import { GENERIC_FILE_UPLOAD_ERRORS } from "./constants/errors.constants";
 
 type CompoundIds = {
   userId: string;
@@ -37,7 +38,7 @@ export function createMulter(dir: string, ids?: CompoundIds) {
     fileFilter: (req, file, cb) => {
       const allowed = ["image/jpeg", "image/png", "image/gif"];
       if (!allowed.includes(file.mimetype)) {
-        return cb(new Error("Only JPG, PNG, and GIF formats are allowed!"));
+        return cb(new Error(GENERIC_FILE_UPLOAD_ERRORS.unAllowedFileFormat));
       }
       cb(null, true);
     },

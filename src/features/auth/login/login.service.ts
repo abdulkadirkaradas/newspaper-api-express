@@ -4,6 +4,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../../core/helper/jwt/generateTokens";
+import { MESSAGES } from "../constants";
 
 export class LoginService {
   static async login(email: string, password: string) {
@@ -23,10 +24,10 @@ export class LoginService {
         updatedAt: true,
       },
     });
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
 
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) throw new Error("Invalid credentials");
+    if (!valid) throw new Error(MESSAGES.ERROR.INVALID_CREDENTIALS);
 
     const accessToken = generateAccessToken({ id: user.id });
     const refreshToken = generateRefreshToken({ id: user.id });

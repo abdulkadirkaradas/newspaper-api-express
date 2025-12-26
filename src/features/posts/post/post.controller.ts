@@ -1,6 +1,8 @@
 import { PostService } from "./post.service";
 import { NextFunction, Request, Response } from "express";
 import { ExtendedRequest } from "../../../core/helper/genericTypes";
+import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
+import { MESSAGES } from "./constants";
 
 export class PostController {
   static async getPost(
@@ -12,7 +14,7 @@ export class PostController {
       const { filter } = req.body;
       const userRoleId = req.user?.roleId;
       const post = await PostService.getPost(userRoleId, filter);
-      res.json(post);
+      res.status(HTTP_STATUS.OK).json(post);
     } catch (error) {
       next(error);
     }
@@ -26,7 +28,10 @@ export class PostController {
     try {
       const data = { ...req.body, authorId: req.user.id };
       const createdPost = await PostService.create(data);
-      res.json(createdPost);
+      res.status(HTTP_STATUS.CREATED).json({
+        message: MESSAGES.RESPONSE.CREATED,
+        createdPost,
+      });
     } catch (error) {
       next(error);
     }
@@ -42,7 +47,10 @@ export class PostController {
       const data = req.body;
       const roleId = req.user.roleId;
       const updatedPost = await PostService.update(roleId, postId, data);
-      res.json(updatedPost);
+      res.status(HTTP_STATUS.OK).json({
+        message: MESSAGES.RESPONSE.UPDATED,
+        updatedPost,
+      });
     } catch (error) {
       next(error);
     }
@@ -62,7 +70,10 @@ export class PostController {
         authorId,
         value: Number(value) as 1 | -1,
       });
-      res.json(votedPost);
+      res.status(HTTP_STATUS.OK).json({
+        message: MESSAGES.RESPONSE.VOTED,
+        votedPost,
+      });
     } catch (error) {
       next(error);
     }
@@ -82,8 +93,8 @@ export class PostController {
         postId,
         filter
       );
-      res.json({
-        message: "Post status updated successfully",
+      res.status(HTTP_STATUS.OK).json({
+        message: MESSAGES.RESPONSE.STATUS_CHANGED,
         post: updatedPost,
       });
     } catch (error) {
@@ -100,13 +111,13 @@ export class PostController {
       const authorId = req.user?.id;
       const { postId } = req.params;
       const approvedPost = await PostService.approve(authorId, postId);
-      res.json({
-        message: "Post approved successfully",
+      res.status(HTTP_STATUS.OK).json({
+        message: MESSAGES.RESPONSE.APPROVED,
         post: approvedPost,
       });
     } catch (error: any) {
-      if (error.message === "Post is already approved!") {
-        res.status(400).json({
+      if (error.message === MESSAGES.ERROR.POST_ALREADY_APPROVED) {
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
           message: error.message,
         });
         return;

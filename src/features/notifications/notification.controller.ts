@@ -1,6 +1,8 @@
 import { NotificationService } from "./notification.service";
 import { ExtendedRequest } from "../../core/helper/genericTypes";
 import { NextFunction, Request, Response } from "express";
+import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
+import { MESSAGES } from "./constants";
 
 export class NotificationController {
   static async getAllNotifications(
@@ -15,7 +17,7 @@ export class NotificationController {
         userRoleId ?? 0,
         filter
       );
-      res.json(notifications);
+      res.status(HTTP_STATUS.OK).json(notifications);
     } catch (error) {
       next(error);
     }
@@ -29,7 +31,7 @@ export class NotificationController {
     try {
       const { filter } = req.body;
       const notifications = await NotificationService.getNotifications(filter);
-      res.json(notifications);
+      res.status(HTTP_STATUS.OK).json(notifications);
     } catch (error) {
       next(error);
     }
@@ -43,7 +45,7 @@ export class NotificationController {
     try {
       const body = { ...req.body, userId: req.user.id };
       const notification = await NotificationService.createNotification(body);
-      res.status(201).json(notification);
+      res.status(HTTP_STATUS.CREATED).json(notification);
     } catch (error) {
       next(error);
     }
@@ -61,7 +63,7 @@ export class NotificationController {
         id,
         data
       );
-      res.json(notifications);
+      res.status(HTTP_STATUS.OK).json(notifications);
     } catch (error) {
       next(error);
     }
@@ -77,14 +79,18 @@ export class NotificationController {
       const { isRead } = req.body;
 
       if (isRead !== null && isRead === undefined) {
-        return res.status(400).json({ message: "isRead field is required." });
+        return res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({
+            message: MESSAGES.FILTER.ISREAD_REQUIRED,
+          });
       }
 
       const notification = await NotificationService.changeNotificationStatus(
         id,
         isRead
       );
-      res.json(notification);
+      res.status(HTTP_STATUS.OK).json(notification);
     } catch (error) {
       next(error);
     }
@@ -98,7 +104,7 @@ export class NotificationController {
     try {
       const { id } = req.params;
       const notification = await NotificationService.deleteNotification(id);
-      res.json(notification);
+      res.status(HTTP_STATUS.OK).json(notification);
     } catch (error) {
       next(error);
     }

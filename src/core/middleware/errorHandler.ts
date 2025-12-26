@@ -2,22 +2,33 @@ import { Request, Response, NextFunction } from "express";
 import { Prisma } from "../../generated/prisma";
 import { ZodError } from "zod";
 import { MulterError } from "multer";
+import { HTTP_STATUS } from "../helper/constants/http-status.constants";
 import { $ZodIssue } from "zod/v4/core";
+import { ERROR_HANDLER } from "../helper/constants/errors.constants";
 
 function handlePrismaError(error: any) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
-      case "P2002":
+      case ERROR_HANDLER.PRISMA_ERROR.P2002.code:
         return {
-          statusCode: 400,
-          message: "Duplicate value error, unique constraint violated",
+          statusCode: HTTP_STATUS.BAD_REQUEST,
+          message: ERROR_HANDLER.PRISMA_ERROR.P2002.message,
         };
-      case "P2003":
-        return { statusCode: 400, message: "Foreign key constraint violation" };
-      case "P2025":
-        return { statusCode: 404, message: "Record not found" };
+      case ERROR_HANDLER.PRISMA_ERROR.P2003.code:
+        return {
+          statusCode: HTTP_STATUS.BAD_REQUEST,
+          message: ERROR_HANDLER.PRISMA_ERROR.P2003.message,
+        };
+      case ERROR_HANDLER.PRISMA_ERROR.P2025.code:
+        return {
+          statusCode: HTTP_STATUS.NOT_FOUND,
+          message: ERROR_HANDLER.PRISMA_ERROR.P2025.message,
+        };
       default:
-        return { statusCode: 400, message: "Prisma request error" };
+        return {
+          statusCode: HTTP_STATUS.BAD_REQUEST,
+          message: ERROR_HANDLER.PRISMA_ERROR.DEFAULT_ERROR_MESSAGE,
+        };
     }
   }
   return null;
@@ -37,8 +48,8 @@ const errorHandler = (
   }
 
   if (err instanceof ZodError) {
-    return res.status(400).json({
-      message: "Validation error",
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      message: ERROR_HANDLER.ZOD_ERROR.validationError,
       errors: err.issues.map((issue: $ZodIssue) => ({
         path: issue.path.join("."),
         message: issue.message,
@@ -47,16 +58,17 @@ const errorHandler = (
   }
 
   if (err instanceof MulterError) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       code: err.code,
       message: err.message,
       field: err.field,
     });
   }
 
-  return res
-    .status(500)
-    .json({ message: "Internal server error", details: err.message });
+  return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+    message: ERROR_HANDLER.INTERNAL_SERVER_ERROR,
+    details: err.message,
+  });
 };
 
 export default errorHandler;

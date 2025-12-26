@@ -1,4 +1,6 @@
 import { prisma } from "../../core/config/database";
+import { ROLE } from "../../core/helper/constants/role.constants";
+import { MESSAGES } from "./constants";
 
 interface Notification {
   userId: string;
@@ -23,8 +25,8 @@ export class NotificationService {
     role: number,
     filter: NotificationAdminFilter
   ) {
-    if (role !== 1) {
-      return { message: "Only admins can access all notifications." };
+    if (role !== ROLE.ADMIN) {
+      return { message: MESSAGES.ERROR.UNSIFFICIENT_ROLE };
     }
 
     return await prisma.notification.findMany({
@@ -53,7 +55,7 @@ export class NotificationService {
       });
     }
 
-    return { message: "Please provide user or notification ID!" };
+    return { message: MESSAGES.FILTER.ID_REQUIRED };
   }
 
   static async createNotification(data: Notification) {

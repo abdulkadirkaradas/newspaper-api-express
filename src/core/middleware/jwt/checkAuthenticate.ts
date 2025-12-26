@@ -3,6 +3,8 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { ExtendedRequest } from "../../helper/genericTypes";
 import { getUserInformation } from "../../config/database";
 import { generateAccessToken } from "../../helper/jwt/generateTokens";
+import { HTTP_STATUS } from "../../helper/constants/http-status.constants";
+import { MIDDLEWARE_ERRORS } from "../../helper/constants/errors.constants";
 
 const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? "";
 const JWT_SECRET_REFRESH: string = process.env.JWT_SECRET_REFRESH ?? "";
@@ -20,7 +22,9 @@ export const checkAuthenticate = (
   const token: string = header && header.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized Action" });
+    return res
+      .status(HTTP_STATUS.UNAUTHORIZED)
+      .json({ message: MIDDLEWARE_ERRORS.AUTH.UNAUTHORIZED_ACTION });
   }
 
   jwt.verify(token, JWT_SECRET_ACCESS, async (error: any, user: any) => {
@@ -28,8 +32,8 @@ export const checkAuthenticate = (
       const refreshToken = getTokenFromRequest(req);
 
       if (!refreshToken) {
-        return res.status(403).json({
-          message: "Please provide the refresh token to renew the access token",
+        return res.status(HTTP_STATUS.FORBIDDEN).json({
+          message: MIDDLEWARE_ERRORS.AUTH.RENEW_REFRESH_TOKEN,
         });
       }
 
@@ -39,15 +43,17 @@ export const checkAuthenticate = (
         (refreshError: any, refreshUser: any) => {
           if (refreshError) {
             return res
-              .status(403)
-              .json({ message: "Invalid or expired refresh token" });
+              .status(HTTP_STATUS.FORBIDDEN)
+              .json({ message: MIDDLEWARE_ERRORS.AUTH.INVALID_REFRESH_TOKEN });
           }
 
           const newAccessToken = generateAccessToken({
             id: refreshUser?.userId,
           });
 
-          return res.json({ accessToken: newAccessToken });
+          return res
+            .status(HTTP_STATUS.OK)
+            .json({ accessToken: newAccessToken });
         }
       );
     }

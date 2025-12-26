@@ -10,6 +10,7 @@ import UserBadgesSeed from "./seeder/userBadgesSeed";
 import UserSeed from "./seeder/userSeed";
 import WarningSeed from "./seeder/warningSeed";
 import { prisma } from "../src/core/config/database";
+import { ROLE } from '../src/core/helper/constants/role.constants';
 
 const main = async () => {
   try {
@@ -33,7 +34,7 @@ const main = async () => {
         username: "admin",
         email: "admin@local.com",
         password: bcrypt.hashSync("12345678", 10),
-        roleId: 1,
+        roleId: ROLE.ADMIN,
       },
     });
 

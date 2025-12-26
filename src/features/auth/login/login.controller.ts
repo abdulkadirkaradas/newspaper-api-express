@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginService } from "./login.service";
 import { ExtendedRequest } from "../../../core/helper/genericTypes";
+import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
 
 export class LoginController {
   static async login(req: Request, res: Response, next: NextFunction) {
@@ -11,22 +12,18 @@ export class LoginController {
         password
       );
 
-      res.json({ accessToken, refreshToken });
+      res.status(HTTP_STATUS.OK).json({ accessToken, refreshToken });
     } catch (err: any) {
       next(err);
     }
   }
 
-  static async user(
-    req: ExtendedRequest,
-    res: Response,
-    next: NextFunction
-  ) {
+  static async user(req: ExtendedRequest, res: Response, next: NextFunction) {
     try {
       const decoded = req.user;
       const user = await LoginService.user(decoded?.id);
 
-      res.json({ message: "Authenticated", user });
+      res.status(HTTP_STATUS.OK).json(user);
     } catch (err: any) {
       next(err);
     }
