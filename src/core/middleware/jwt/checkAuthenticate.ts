@@ -4,6 +4,7 @@ import { ExtendedRequest } from "../../helper/genericTypes";
 import { getUserInformation } from "../../config/database";
 import { generateAccessToken } from "../../helper/jwt/generateTokens";
 import { HTTP_STATUS } from "../../helper/constants/http-status.constants";
+import { MIDDLEWARE_ERRORS } from "../../helper/constants/errors.constants";
 
 const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? "";
 const JWT_SECRET_REFRESH: string = process.env.JWT_SECRET_REFRESH ?? "";
@@ -21,7 +22,9 @@ export const checkAuthenticate = (
   const token: string = header && header.split(" ")[1];
 
   if (!token) {
-    return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: "Unauthorized Action" });
+    return res
+      .status(HTTP_STATUS.UNAUTHORIZED)
+      .json({ message: MIDDLEWARE_ERRORS.AUTH.UNAUTHORIZED_ACTION });
   }
 
   jwt.verify(token, JWT_SECRET_ACCESS, async (error: any, user: any) => {
@@ -30,7 +33,7 @@ export const checkAuthenticate = (
 
       if (!refreshToken) {
         return res.status(HTTP_STATUS.FORBIDDEN).json({
-          message: "Please provide the refresh token to renew the access token",
+          message: MIDDLEWARE_ERRORS.AUTH.RENEW_REFRESH_TOKEN,
         });
       }
 
@@ -41,14 +44,16 @@ export const checkAuthenticate = (
           if (refreshError) {
             return res
               .status(HTTP_STATUS.FORBIDDEN)
-              .json({ message: "Invalid or expired refresh token" });
+              .json({ message: MIDDLEWARE_ERRORS.AUTH.INVALID_REFRESH_TOKEN });
           }
 
           const newAccessToken = generateAccessToken({
             id: refreshUser?.userId,
           });
 
-          return res.status(HTTP_STATUS.OK).json({ accessToken: newAccessToken });
+          return res
+            .status(HTTP_STATUS.OK)
+            .json({ accessToken: newAccessToken });
         }
       );
     }
