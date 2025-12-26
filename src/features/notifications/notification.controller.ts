@@ -2,6 +2,7 @@ import { NotificationService } from "./notification.service";
 import { ExtendedRequest } from "../../core/helper/genericTypes";
 import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
+import { MESSAGES } from "./constants";
 
 export class NotificationController {
   static async getAllNotifications(
@@ -80,7 +81,9 @@ export class NotificationController {
       if (isRead !== null && isRead === undefined) {
         return res
           .status(HTTP_STATUS.BAD_REQUEST)
-          .json({ message: "isRead field is required." });
+          .json({
+            message: MESSAGES.FILTER.ISREAD_REQUIRED,
+          });
       }
 
       const notification = await NotificationService.changeNotificationStatus(
