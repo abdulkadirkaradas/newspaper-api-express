@@ -1,5 +1,6 @@
 import { prisma } from "../../../core/config/database";
 import { Prisma } from "@prisma/client";
+import { ROLE } from "../../../core/helper/constants/role.constants";
 
 interface Post {
   title: string;
@@ -35,7 +36,7 @@ export class PostService {
   static async getPost(roleId: number, filter: PostFilter) {
     // Define allowed filter keys based on user role
     const allowedKeys =
-      roleId === 3
+      roleId === ROLE.WRITER
         ? (["id", "authorId", "categoryId"] as (keyof PostFilter)[])
         : ([
             "id",
@@ -54,7 +55,7 @@ export class PostService {
     }
 
     // Enforce at least one filter for roleId 3 (regular users)
-    if (roleId === 3 && Object.values(where).length === 0) {
+    if (roleId === ROLE.WRITER && Object.values(where).length === 0) {
       return "Please provide at least one of the post, user or category ID's!";
     }
 
@@ -132,7 +133,8 @@ export class PostService {
     data: Partial<Omit<Post, "authorId" | "opposedToId">>
   ) {
     const updateData: Partial<typeof data> = { ...data };
-    if (roleId === 3 && updateData.categoryId) delete updateData.categoryId;
+    if (roleId === ROLE.WRITER && updateData.categoryId)
+      delete updateData.categoryId;
 
     return await prisma.post.update({
       where: { id },

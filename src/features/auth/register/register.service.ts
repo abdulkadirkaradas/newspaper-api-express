@@ -4,6 +4,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../../core/helper/jwt/generateTokens";
+import { ROLE } from "../../../core/helper/constants/role.constants";
 
 interface Register {
   name: string;
@@ -26,7 +27,7 @@ export class RegisterService {
         email,
         password: hashedPassword,
         emailVerifiedAt: null,
-        roleId: 2,
+        roleId: ROLE.WRITER,
       },
       select: {
         id: true,

@@ -1,4 +1,5 @@
 import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
+import { ROLE } from "../../core/helper/constants/role.constants";
 import { ExtendedRequest } from "../../core/helper/genericTypes";
 import { UserService } from "./user.service";
 import { NextFunction, Request, Response } from "express";
@@ -38,8 +39,8 @@ export class UserController {
       const { id } = req.params;
       const { blocked, deleted } = req.body;
 
-      if (roleId === 1 || (roleId === 2 && blocked !== undefined)) {
-        const updateData = { blocked, ...(roleId === 1 && { deleted }) };
+      if (roleId === ROLE.ADMIN || (roleId === ROLE.MODERATOR && blocked !== undefined)) {
+        const updateData = { blocked, ...(roleId === ROLE.ADMIN && { deleted }) };
         const updatedUser = await UserService.updateUserStatus(id, updateData);
 
         return res.status(HTTP_STATUS.OK).json({

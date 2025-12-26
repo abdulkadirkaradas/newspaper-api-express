@@ -1,14 +1,16 @@
+import { ROLE } from "./constants/role.constants";
+
 function getRole(role: number | string): number | string | null {
   const roleMapNumberToString: { [key: number]: string } = {
-    1: "Admin",
-    2: "Moderator",
-    3: "Writer",
+    [ROLE.ADMIN]: "Admin",
+    [ROLE.MODERATOR]: "Moderator",
+    [ROLE.WRITER]: "Writer",
   };
 
   const roleMapStringToNumber: { [key: string]: number } = {
-    Admin: 1,
-    Moderator: 2,
-    Writer: 3,
+    Admin: ROLE.ADMIN,
+    Moderator: ROLE.MODERATOR,
+    Writer: ROLE.WRITER,
   };
 
   return (

@@ -1,4 +1,5 @@
 import { prisma } from "../../core/config/database";
+import { ROLE } from "../../core/helper/constants/role.constants";
 
 interface Warning {
   userId: string;
@@ -19,7 +20,7 @@ type WarningAdminFilter = WarningDefaultFilter & {
 
 export class WarningService {
   static async getAllWarnings(role: number, filter: WarningAdminFilter) {
-    if (role !== 1) {
+    if (role !== ROLE.ADMIN) {
       return { message: "Only admins can access all warnings." };
     }
 

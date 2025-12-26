@@ -1,4 +1,5 @@
 import { prisma } from "../../core/config/database";
+import { ROLE } from "../../core/helper/constants/role.constants";
 
 interface Notification {
   userId: string;
@@ -23,7 +24,7 @@ export class NotificationService {
     role: number,
     filter: NotificationAdminFilter
   ) {
-    if (role !== 1) {
+    if (role !== ROLE.ADMIN) {
       return { message: "Only admins can access all notifications." };
     }
 
