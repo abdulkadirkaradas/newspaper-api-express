@@ -1,4 +1,5 @@
 import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
+import { MESSAGES } from "./constants";
 import { PostCategoryService } from "./post.category.service";
 import { NextFunction, Request, Response } from "express";
 
@@ -20,7 +21,9 @@ export class PostCategoryController {
         name,
         description,
       });
-      res.status(HTTP_STATUS.CREATED).json(category);
+      res
+        .status(HTTP_STATUS.CREATED)
+        .json({ id: category.id, message: MESSAGES.RESPONSE.CREATED });
     } catch (error) {
       next(error);
     }
@@ -36,7 +39,7 @@ export class PostCategoryController {
       });
       res
         .status(HTTP_STATUS.OK)
-        .json({ id: category.id, message: "Category updated successfull" });
+        .json({ id: category.id, message: MESSAGES.RESPONSE.UPDATED });
     } catch (error) {
       next(error);
     }
@@ -49,13 +52,13 @@ export class PostCategoryController {
       if (deleted === undefined) {
         res
           .status(HTTP_STATUS.BAD_REQUEST)
-          .json({ message: "Please provide delete status!" });
+          .json({ message: MESSAGES.FILTER.STATUS_REQUIRED });
       }
 
       const category = await PostCategoryService.deleteCategory(id, deleted);
       res
         .status(HTTP_STATUS.OK)
-        .json({ id: category.id, message: "Category updated successfull" });
+        .json({ id: category.id, message: MESSAGES.RESPONSE.DELETED });
     } catch (error) {
       next(error);
     }
