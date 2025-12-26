@@ -2,6 +2,7 @@ import { PostService } from "./post.service";
 import { NextFunction, Request, Response } from "express";
 import { ExtendedRequest } from "../../../core/helper/genericTypes";
 import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
+import { MESSAGES } from "./constants";
 
 export class PostController {
   static async getPost(
@@ -27,7 +28,10 @@ export class PostController {
     try {
       const data = { ...req.body, authorId: req.user.id };
       const createdPost = await PostService.create(data);
-      res.status(HTTP_STATUS.CREATED).json(createdPost);
+      res.status(HTTP_STATUS.CREATED).json({
+        message: MESSAGES.RESPONSE.CREATED,
+        createdPost,
+      });
     } catch (error) {
       next(error);
     }
@@ -43,7 +47,10 @@ export class PostController {
       const data = req.body;
       const roleId = req.user.roleId;
       const updatedPost = await PostService.update(roleId, postId, data);
-      res.status(HTTP_STATUS.OK).json(updatedPost);
+      res.status(HTTP_STATUS.OK).json({
+        message: MESSAGES.RESPONSE.UPDATED,
+        updatedPost,
+      });
     } catch (error) {
       next(error);
     }
@@ -63,7 +70,10 @@ export class PostController {
         authorId,
         value: Number(value) as 1 | -1,
       });
-      res.status(HTTP_STATUS.OK).json(votedPost);
+      res.status(HTTP_STATUS.OK).json({
+        message: MESSAGES.RESPONSE.VOTED,
+        votedPost,
+      });
     } catch (error) {
       next(error);
     }
@@ -84,7 +94,7 @@ export class PostController {
         filter
       );
       res.status(HTTP_STATUS.OK).json({
-        message: "Post status updated successfully",
+        message: MESSAGES.RESPONSE.STATUS_CHANGED,
         post: updatedPost,
       });
     } catch (error) {
@@ -102,7 +112,7 @@ export class PostController {
       const { postId } = req.params;
       const approvedPost = await PostService.approve(authorId, postId);
       res.status(HTTP_STATUS.OK).json({
-        message: "Post approved successfully",
+        message: MESSAGES.RESPONSE.APPROVED,
         post: approvedPost,
       });
     } catch (error: any) {

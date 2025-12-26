@@ -1,6 +1,7 @@
 import { prisma } from "../../../core/config/database";
 import { Prisma } from "@prisma/client";
 import { ROLE } from "../../../core/helper/constants/role.constants";
+import { MESSAGES } from "./constants";
 
 interface Post {
   title: string;
@@ -56,7 +57,9 @@ export class PostService {
 
     // Enforce at least one filter for roleId 3 (regular users)
     if (roleId === ROLE.WRITER && Object.values(where).length === 0) {
-      return "Please provide at least one of the post, user or category ID's!";
+      return {
+        message: MESSAGES.FILTER.ID_REQUIRED,
+      };
     }
 
     // If no filters are provided, defaults to returning the last 7 days of posts
@@ -181,10 +184,10 @@ export class PostService {
       where: { id },
     });
 
-    if (!checkPost) throw new Error("Post not found!");
+    if (!checkPost) throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
 
     if (checkPost.visibility && checkPost.approvedBy) {
-      throw new Error("Post is already approved!");
+      throw new Error(MESSAGES.ERROR.POST_ALREADY_APPROVED);
     }
 
     return await prisma.post.update({
@@ -218,7 +221,7 @@ export class PostService {
           data: { score: { increment: value } },
         });
 
-        return { action: "CREATED", value };
+        return { action: MESSAGES.VOTE.CREATED, value };
       }
 
       if (existingVote.deleted) {
@@ -232,7 +235,7 @@ export class PostService {
           data: { score: { increment: value } },
         });
 
-        return { action: "RESTORED", value };
+        return { action: MESSAGES.VOTE.RESTORED, value };
       }
 
       if (existingVote.value === value) {
@@ -246,7 +249,7 @@ export class PostService {
           data: { score: { decrement: value } },
         });
 
-        return { action: "REMOVED" };
+        return { action: MESSAGES.VOTE.REMOVED };
       }
 
       const diff = value - existingVote.value;
@@ -261,7 +264,7 @@ export class PostService {
         data: { score: { increment: diff } },
       });
 
-      return { action: "UPDATED", value };
+      return { action: MESSAGES.VOTE.UPDATED, value };
     });
   }
 }
