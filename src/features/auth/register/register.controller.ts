@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { RegisterService } from "./register.service";
-import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 
 export class RegisterController {
   static async register(req: Request, res: Response, next: NextFunction) {

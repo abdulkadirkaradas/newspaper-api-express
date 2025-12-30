@@ -1,9 +1,9 @@
-import apiRouter from "../routes/api";
+import apiRouter from "@/routes/api";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Application } from "express";
 import morgan from "morgan";
-import webRouter from "../routes/web";
+import webRouter from "@/routes/web";
 import errorHandler from "./middleware/errorHandler";
 
 export const app: Application = express();

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AnnouncementController } from "./announcement.controller";
-import { validateRequest } from "../../core/helper/genericValidation";
+import { validateRequest } from "@/core/helper/genericValidation";
 import { AnnounceCreateRequestSchema } from "./validationScheme";
 
 const router = Router();

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AnnouncementService } from "./announcement.service";
-import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 
 export class AnnouncementController {
   static async getAllAnnouncements(

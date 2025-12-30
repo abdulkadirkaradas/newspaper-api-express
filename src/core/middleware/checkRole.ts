@@ -1,10 +1,10 @@
 import { Response, NextFunction } from "express";
-import { prisma } from "../config/database";
-import { verifyRole } from "../helper/userRoles";
-import { ExtendedRequest } from "../helper/genericTypes";
-import { HTTP_STATUS } from "../helper/constants/http-status.constants";
-import { ROLE } from "../helper/constants/role.constants";
-import { MIDDLEWARE_ERRORS } from "../helper/constants/errors.constants";
+import { prisma } from "@/core/config/database";
+import { verifyRole } from "@/core/helper/userRoles";
+import { ExtendedRequest } from "@/core/helper/genericTypes";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
+import { ROLE } from "@/core/helper/constants/role.constants";
+import { MIDDLEWARE_ERRORS } from "@/core/helper/constants/errors.constants";
 
 export const checkRole = (role: string[]) => {
   return async (req: ExtendedRequest, res: Response, next: NextFunction) => {

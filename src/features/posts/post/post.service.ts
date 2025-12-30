@@ -1,6 +1,6 @@
-import { prisma } from "../../../core/config/database";
+import { prisma } from "@/core/config/database";
 import { Prisma } from "@prisma/client";
-import { ROLE } from "../../../core/helper/constants/role.constants";
+import { ROLE } from "@/core/helper/constants/role.constants";
 import { MESSAGES } from "./constants";
 
 interface Post {

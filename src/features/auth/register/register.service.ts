@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
-import { prisma } from "../../../core/config/database";
+import { prisma } from "@/core/config/database";
 import {
   generateAccessToken,
   generateRefreshToken,
-} from "../../../core/helper/jwt/generateTokens";
-import { ROLE } from "../../../core/helper/constants/role.constants";
+} from "@/core/helper/jwt/generateTokens";
+import { ROLE } from "@/core/helper/constants/role.constants";
 
 interface Register {
   name: string;

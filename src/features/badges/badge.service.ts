@@ -1,4 +1,4 @@
-import { prisma } from "../../core/config/database";
+import { prisma } from "@/core/config/database";
 
 interface Badge {
   name: string;

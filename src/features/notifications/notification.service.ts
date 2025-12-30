@@ -1,5 +1,5 @@
-import { prisma } from "../../core/config/database";
-import { ROLE } from "../../core/helper/constants/role.constants";
+import { prisma } from "@/core/config/database";
+import { ROLE } from "@/core/helper/constants/role.constants";
 import { MESSAGES } from "./constants";
 
 interface Notification {

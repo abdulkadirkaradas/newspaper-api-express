@@ -1,5 +1,5 @@
 import path from "path";
-import { prisma } from "../../../core/config/database";
+import { prisma } from "@/core/config/database";
 
 interface PostImage {
   files: Express.Multer.File[];

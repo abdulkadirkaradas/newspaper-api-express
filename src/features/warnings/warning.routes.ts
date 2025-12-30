@@ -1,9 +1,9 @@
 import { NotificationCreateRequestSchema } from "./validationScheme";
 import { Router } from "express";
-import { validateRequest } from "../../core/helper/genericValidation";
+import { validateRequest } from "@/core/helper/genericValidation";
 
 import { WarningController } from "./warning.controller";
-import { checkRole } from "../../core/middleware/checkRole";
+import { checkRole } from "@/core/middleware/checkRole";
 
 const router = Router();
 

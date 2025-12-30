@@ -1,7 +1,7 @@
 import path from "path";
-import { createMulter } from "../helper/genericFileUpload";
+import { createMulter } from "@/core/helper/genericFileUpload";
 import { NextFunction, Response, RequestHandler } from "express";
-import { ExtendedRequest } from "../helper/genericTypes";
+import { ExtendedRequest } from "@/core/helper/genericTypes";
 
 export function fileUploadMiddleware(folderName: string): RequestHandler {
   return (req: ExtendedRequest, res: Response, next: NextFunction) => {

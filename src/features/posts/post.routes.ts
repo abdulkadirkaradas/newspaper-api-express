@@ -1,16 +1,16 @@
-import { fileUploadMiddleware } from "../../core/middleware/fileUpload";
+import { fileUploadMiddleware } from "@/core/middleware/fileUpload";
 import { PostImageController } from "./postImages/post.images.controller";
 import { PostController } from "./post/post.controller";
 import { Router } from "express";
-import { checkAuthenticate } from "../../core/middleware/jwt/checkAuthenticate";
+import { checkAuthenticate } from "@/core/middleware/jwt/checkAuthenticate";
 import {
   PostCreateRequestSchema,
   PostStatusUpdateRequestSchema,
   PostUpdateRequestSchema,
   PostVoteRequestSchema,
 } from "./post/validationScheme";
-import { validateRequest } from "../../core/helper/genericValidation";
-import { checkRole } from "../../core/middleware/checkRole";
+import { validateRequest } from "@/core/helper/genericValidation";
+import { checkRole } from "@/core/middleware/checkRole";
 
 const router = Router();
 

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginService } from "./login.service";
-import { ExtendedRequest } from "../../../core/helper/genericTypes";
-import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
+import { ExtendedRequest } from "@/core/helper/genericTypes";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 
 export class LoginController {
   static async login(req: Request, res: Response, next: NextFunction) {
