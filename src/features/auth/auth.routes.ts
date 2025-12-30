@@ -1,10 +1,10 @@
-import { checkAuthenticate } from "../../core/middleware/jwt/checkAuthenticate";
+import { checkAuthenticate } from "@/core/middleware/jwt/checkAuthenticate";
 import { LoginController } from "./login/login.controller";
 import { loginRequestSchema } from "./login/validationSchemes";
 import { RegisterController } from "./register/register.controller";
 import { registerRequestSchema } from "./register/validationSchemes";
 import { Router } from "express";
-import { validateRequest } from "../../core/helper/genericValidation";
+import { validateRequest } from "@/core/helper/genericValidation";
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-import { prisma } from "../../core/config/database";
+import { prisma } from "@/core/config/database";
 
 interface UserDefaultFilter {
   id?: string;

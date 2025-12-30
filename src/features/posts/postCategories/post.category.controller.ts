@@ -1,4 +1,4 @@
-import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 import { MESSAGES } from "./constants";
 import { PostCategoryService } from "./post.category.service";
 import { NextFunction, Request, Response } from "express";

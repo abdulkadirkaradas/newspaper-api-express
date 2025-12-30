@@ -1,7 +1,7 @@
-import { checkRole } from "../../core/middleware/checkRole";
+import { checkRole } from "@/core/middleware/checkRole";
 import { NotificationCreateRequestSchema } from "./validationScheme";
 import { Router } from "express";
-import { validateRequest } from "../../core/helper/genericValidation";
+import { validateRequest } from "@/core/helper/genericValidation";
 import { NotificationController } from "./notification.controller";
 
 const router = Router();

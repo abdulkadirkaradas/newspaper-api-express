@@ -1,6 +1,6 @@
-import { checkRole } from "../../../core/middleware/checkRole";
+import { checkRole } from "@/core/middleware/checkRole";
 import { Router } from "express";
-import { validateRequest } from "../../../core/helper/genericValidation";
+import { validateRequest } from "@/core/helper/genericValidation";
 import {
   PostCategoryCreateRequestSchema,
   PostCategoryUpdateSchema,

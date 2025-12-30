@@ -1,13 +1,13 @@
-import announcementRouters from "../features/announcements/announcement.routes";
-import authRouters from "../features/auth/auth.routes";
-import badgeRouters from "../features/badges/badge.routes";
-import posts from "../features/posts/post.routes";
-import postCategoryRoutes from "../features/posts/postCategories/post.category.routes";
-import notificationRoutes from "../features/notifications/notification.routes";
-import userRoutes from "../features/users/user.routes";
-import warningRoutes from "../features/warnings/warning.routes";
-import { checkAuthenticate } from "../core/middleware/jwt/checkAuthenticate";
-import { checkRole } from "../core/middleware/checkRole";
+import announcementRouters from "@/features/announcements/announcement.routes";
+import authRouters from "@/features/auth/auth.routes";
+import badgeRouters from "@/features/badges/badge.routes";
+import posts from "@/features/posts/post.routes";
+import postCategoryRoutes from "@/features/posts/postCategories/post.category.routes";
+import notificationRoutes from "@/features/notifications/notification.routes";
+import userRoutes from "@/features/users/user.routes";
+import warningRoutes from "@/features/warnings/warning.routes";
+import { checkAuthenticate } from "@/core/middleware/jwt/checkAuthenticate";
+import { checkRole } from "@/core/middleware/checkRole";
 import { Router } from "express";
 
 const router = Router();

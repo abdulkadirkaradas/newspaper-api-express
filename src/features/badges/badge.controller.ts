@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { BadgeService } from "./badge.service";
-import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 
 export class BadgeController {
   static async getBadges(req: Request, res: Response, next: NextFunction) {

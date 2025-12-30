@@ -1,6 +1,6 @@
-import { HTTP_STATUS } from "../../core/helper/constants/http-status.constants";
-import { ROLE } from "../../core/helper/constants/role.constants";
-import { ExtendedRequest } from "../../core/helper/genericTypes";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
+import { ROLE } from "@/core/helper/constants/role.constants";
+import { ExtendedRequest } from "@/core/helper/genericTypes";
 import { MESSAGES } from "./constants";
 import { UserService } from "./user.service";
 import { NextFunction, Request, Response } from "express";

@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { UserController } from "./user.controller";
-import { checkRole } from "../../core/middleware/checkRole";
+import { checkRole } from "@/core/middleware/checkRole";
 import { UserFilterSchema } from "./validationScheme";
-import { validateRequest } from "../../core/helper/genericValidation";
+import { validateRequest } from "@/core/helper/genericValidation";
 
 const router = Router();
 

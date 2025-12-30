@@ -1,7 +1,7 @@
 import { PostImageService } from "./post.images.service";
-import { ExtendedRequest } from "../../../core/helper/genericTypes";
+import { ExtendedRequest } from "@/core/helper/genericTypes";
 import { NextFunction, Request, Response } from "express";
-import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 import { MESSAGES } from "./constants";
 
 export class PostImageController {

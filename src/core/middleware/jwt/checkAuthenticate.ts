@@ -1,10 +1,10 @@
 import { Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { ExtendedRequest } from "../../helper/genericTypes";
-import { getUserInformation } from "../../config/database";
-import { generateAccessToken } from "../../helper/jwt/generateTokens";
-import { HTTP_STATUS } from "../../helper/constants/http-status.constants";
-import { MIDDLEWARE_ERRORS } from "../../helper/constants/errors.constants";
+import { ExtendedRequest } from "@/core/helper/genericTypes";
+import { getUserInformation } from "@/core/config/database";
+import { generateAccessToken } from "@/core/helper/jwt/generateTokens";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
+import { MIDDLEWARE_ERRORS } from "@/core/helper/constants/errors.constants";
 
 const JWT_SECRET_ACCESS: string = process.env.JWT_SECRET_ACCESS ?? "";
 const JWT_SECRET_REFRESH: string = process.env.JWT_SECRET_REFRESH ?? "";

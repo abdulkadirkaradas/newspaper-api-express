@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { Prisma } from "../../generated/prisma";
+import { Prisma } from "@/generated/prisma";
 import { ZodError } from "zod";
 import { MulterError } from "multer";
-import { HTTP_STATUS } from "../helper/constants/http-status.constants";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 import { $ZodIssue } from "zod/v4/core";
-import { ERROR_HANDLER } from "../helper/constants/errors.constants";
+import { ERROR_HANDLER } from "@/core/helper/constants/errors.constants";
 
 function handlePrismaError(error: any) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {

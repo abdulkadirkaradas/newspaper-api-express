@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkAuthenticate } from "../core/middleware/jwt/checkAuthenticate";
+import { checkAuthenticate } from "@/core/middleware/jwt/checkAuthenticate";
 
 const router = Router();
 

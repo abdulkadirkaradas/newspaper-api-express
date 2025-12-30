@@ -1,7 +1,7 @@
 import { PostService } from "./post.service";
 import { NextFunction, Request, Response } from "express";
-import { ExtendedRequest } from "../../../core/helper/genericTypes";
-import { HTTP_STATUS } from "../../../core/helper/constants/http-status.constants";
+import { ExtendedRequest } from "@/core/helper/genericTypes";
+import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 import { MESSAGES } from "./constants";
 
 export class PostController {
