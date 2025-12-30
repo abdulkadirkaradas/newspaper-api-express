@@ -12,6 +12,9 @@
     "skipDefaultLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]
