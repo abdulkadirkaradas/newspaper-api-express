@@ -8,8 +8,9 @@ services:
       - .:/app
       - /app/node_modules
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=${DATABASE_URL}
+      NODE_ENV: development
+      DATABASE_URL: ${DATABASE_URL}
+      CHOKIDAR_USEPOLLING: "true"
     depends_on:
       - postgres
     networks:
