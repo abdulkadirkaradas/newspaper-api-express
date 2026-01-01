@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch --clear-screen=false src/server.ts",
+    "dev": "nodemon -L --watch src --ext ts --exec tsx src/server.ts",
     "prisma-seed": "tsx prisma/seed.ts",
     "prisma-migrate": "prisma migrate dev --name init",
     "prisma-generate": "prisma generate"
@@ -38,6 +38,7 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^25.0.3",
     "@types/pg": "^8.16.0",
+    "nodemon": "^3.1.11",
     "prisma": "^7.2.0",
     "typescript": "^5.9.3"
   }
