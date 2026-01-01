@@ -9,7 +9,7 @@ interface Badge {
 }
 
 export class BadgeService {
-  static async getBadges(filter: "id" | "all", id: string | null) {
+  static async get(filter: "id" | "all", id: string | null) {
     if (filter === "all" && !id) {
       return await prisma.badge.findMany();
     }
@@ -21,7 +21,18 @@ export class BadgeService {
     return {};
   }
 
-  static async createBadge(data: Badge) {
+  static async create(data: Badge) {
     return await prisma.badge.create({ data });
+  }
+
+  static async update(id: string, data: Partial<Badge>) {
+    return await prisma.badge.update({ where: { id }, data });
+  }
+
+  static async delete(id: string, deleted: boolean) {
+    return await prisma.badge.update({
+      where: { id },
+      data: { deleted: deleted },
+    });
   }
 }
