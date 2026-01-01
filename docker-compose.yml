@@ -31,20 +31,6 @@ services:
     networks:
       - newspaperapi
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: newspaper_api_pgadmin
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgres
-    networks:
-      - newspaperapi
-
 networks:
   newspaperapi:
     driver: bridge
