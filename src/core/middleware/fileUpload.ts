@@ -5,19 +5,20 @@ import { ExtendedRequest } from "@/core/helper/genericTypes";
 
 export function fileUploadMiddleware(folderName: string): RequestHandler {
   return (req: ExtendedRequest, res: Response, next: NextFunction) => {
+    const userId = req.user?.id;
+    const postId = req.params.postId;
     const uploadDir = path.resolve(
       process.cwd(),
       "public",
       "uploads",
-      folderName
+      folderName,
+      userId?.toString() ?? "",
+      postId?.toString() ?? ""
     );
-
-    const userId = req.user?.id;
-    const newsId = req.params.newsId;
 
     const multerInstance = createMulter(uploadDir, {
       userId: userId ?? undefined,
-      relId: newsId ?? undefined,
+      relId: postId ?? undefined,
     });
 
     return multerInstance.array("image", 10)(req, res, next);
