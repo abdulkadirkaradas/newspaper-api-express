@@ -12,11 +12,7 @@ import { Router } from "express";
 
 const router = Router();
 
-router.use(
-  "/announcements",
-  [checkAuthenticate, checkRole(["Admin"])],
-  announcementRouters
-);
+router.use("/announcements", [checkAuthenticate], announcementRouters);
 router.use(
   "/badges",
   [checkAuthenticate, checkRole(["Admin", "Moderator", "Writer"])],
