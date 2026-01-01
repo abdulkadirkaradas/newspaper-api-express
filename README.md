@@ -38,7 +38,7 @@ Also it uses PgAdmin for database management and JWT for authentication.
 #### Running containers;
 
 ```docker
-docker-compose up -d
+docker-compose up --build -d
 ```
 
 #### Running tables and seeds;
