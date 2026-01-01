@@ -37,7 +37,7 @@ export class AnnouncementController {
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
-      const { data }: { data: AnnouncementData } = req.body;
+      const { data }: { data: Partial<AnnouncementData> } = req.body;
 
       const announcement = await AnnouncementService.update(id, {
         title: data.title,
@@ -53,7 +53,7 @@ export class AnnouncementController {
   static async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
-      const { deleted } = req.body;
+      const { deleted }: { deleted: boolean } = req.body;
 
       await AnnouncementService.delete(id, deleted);
       res.status(HTTP_STATUS.OK).json({ success: true });
