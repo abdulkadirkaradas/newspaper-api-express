@@ -70,9 +70,7 @@ model Badge {
   id          String       @id @default(cuid())
   name        String
   description String
-  type        String
-  mimeType    String
-  fullpath    String
+  url         String
   deleted     Boolean      @default(false)
   createdAt   DateTime     @default(now()) @db.Timestamptz(3)
   updatedAt   DateTime     @updatedAt @db.Timestamptz(3)

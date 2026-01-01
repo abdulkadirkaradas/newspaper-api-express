@@ -14,9 +14,7 @@ class BadgeSeed extends Seeder {
       this._data.push({
         name: faker.word.sample(),
         description: faker.lorem.sentence(),
-        type: faker.word.sample(),
-        mimeType: faker.system.fileExt(),
-        fullpath: faker.system.filePath(),
+        url: faker.image.url(),
         deleted: faker.datatype.boolean(),
       });
     }

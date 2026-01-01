@@ -3,9 +3,7 @@ import { prisma } from "@/core/config/database";
 interface Badge {
   name: string;
   description: string;
-  type: string;
-  mimeType: string;
-  fullpath: string;
+  url: string;
 }
 
 export class BadgeService {

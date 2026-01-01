@@ -5,9 +5,7 @@ import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 type BadgeData = {
   name: string;
   description: string;
-  type: string;
-  mimeType: string;
-  fullpath: string;
+  url: string;
 };
 export class BadgeController {
   static async get(req: Request, res: Response, next: NextFunction) {
