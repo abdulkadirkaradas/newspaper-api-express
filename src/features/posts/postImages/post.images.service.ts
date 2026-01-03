@@ -6,7 +6,23 @@ interface PostImage {
   postId: string;
 }
 
+interface PostImageFilter {
+  id: string;
+  postId: string;
+}
+interface PostImageDeleteFilter {
+  id?: string | string[] | null;
+  postId?: string | null;
+}
+
 export class PostImageService {
+  static async get(filter: PostImageFilter) {
+    let where = { ...filter, deleted: false };
+    return prisma.postImage.findMany({
+      where: where,
+    });
+  }
+
   static async upload(images: PostImage) {
     return Promise.all(
       images.files.map((file) => {
@@ -21,5 +37,28 @@ export class PostImageService {
         });
       })
     );
+  }
+
+  static async delete(filter: PostImageDeleteFilter, deleted: boolean) {
+    if (Array.isArray(filter.id)) {
+      return prisma.postImage.updateMany({
+        where: {
+          id: { in: filter.id },
+          postId: filter.postId!,
+        },
+        data: {
+          deleted: deleted,
+        },
+      });
+    }
+
+    return prisma.postImage.update({
+      where: {
+        id: filter.id!,
+      },
+      data: {
+        deleted: deleted,
+      },
+    });
   }
 }

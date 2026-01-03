@@ -1,15 +1,20 @@
 import { PostImageService } from "./post.images.service";
-import { ExtendedRequest } from "@/core/helper/genericTypes";
 import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 import { MESSAGES } from "./constants";
 
 export class PostImageController {
-  static async uploadImages(
-    req: ExtendedRequest,
-    res: Response,
-    next: NextFunction
-  ) {
+  static async get(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { filter } = req.body;
+      const images = await PostImageService.get(filter);
+      res.status(HTTP_STATUS.OK).json(images);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async upload(req: Request, res: Response, next: NextFunction) {
     try {
       const { postId } = req.params;
       const files = req.files as Express.Multer.File[];
@@ -37,6 +42,16 @@ export class PostImageController {
         id: savedFiles,
         message: message,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { filter, deleted } = req.body;
+      const image = await PostImageService.delete(filter, deleted);
+      res.status(HTTP_STATUS.OK).json(image);
     } catch (error) {
       next(error);
     }
