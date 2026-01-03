@@ -11,6 +11,11 @@ import {
 } from "./post/validationScheme";
 import { validateRequest } from "@/core/helper/genericValidation";
 import { checkRole } from "@/core/middleware/checkRole";
+import {
+  PostImageDeleteRequestSchema,
+  PostImageFilterSchema,
+  PostImageUploadRequestSchema,
+} from "./postImages/validationSchema";
 
 const router = Router();
 
@@ -47,10 +52,24 @@ router.patch(
 /**
  * PostImage routes
  */
+router.get(
+  "/image",
+  [checkAuthenticate, validateRequest(PostImageFilterSchema)],
+  PostImageController.get
+);
 router.post(
-  "/:postId/upload",
-  [checkAuthenticate, fileUploadMiddleware("post_images")],
-  PostImageController.uploadImages
+  "/image/:postId",
+  [
+    checkAuthenticate,
+    fileUploadMiddleware("post_images"),
+    validateRequest(PostImageUploadRequestSchema),
+  ],
+  PostImageController.upload
+);
+router.delete(
+  "/image",
+  [checkAuthenticate, validateRequest(PostImageDeleteRequestSchema)],
+  PostImageController.delete
 );
 
 export default router;
