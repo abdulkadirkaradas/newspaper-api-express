@@ -18,6 +18,7 @@ This API project is built using Node.js, Express.js, PostgreSQL, and Prisma. It 
 - ExpressJs
 - PostgreSQL
 - Prisma
+- Docker
 - JWT
 
 ### Folder Structure;
@@ -82,7 +83,7 @@ docker-compose exec api npm run prisma-generate
 #### Truncate database and seed;
 
 > [!warning]
-> This command will truncate the database, push the tables, and seed it again.
+> These commands will truncate the database, push the tables, and seed it again.
 
 ```docker
 docker-compose exec api npx prisma db push --force-reset
