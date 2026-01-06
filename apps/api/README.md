@@ -61,6 +61,12 @@ JWT_SECRET_REFRESH=your_refresh_token_secret
    docker-compose up --build -d
    ```
 
+   **Development Overrides (Optional):**
+   If you need development-only configurations (e.g., exposing PostgreSQL port `5432` to host), use:
+   ```bash
+   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+   ```
+
 2. **Initialize Database (Prisma):**
    ```bash
    # Run migrations
