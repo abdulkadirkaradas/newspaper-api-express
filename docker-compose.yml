@@ -1,24 +1,43 @@
 services:
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
     container_name: newspaper_api
+    restart: always
     ports:
       - "3000:3000"
     volumes:
       - .:/app
       - /app/node_modules
+    env_file:
+      - .env
+      - apps/api/.env
     environment:
-      NODE_ENV: development
+      NODE_ENV: ${NODE_ENV}
       DATABASE_URL: ${DATABASE_URL}
-      CHOKIDAR_USEPOLLING: "true"
     depends_on:
       - postgres
     networks:
-      - newspaperapi
+      - newspaper-net
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: newspaper_web
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - newspaper-net
 
   postgres:
     image: postgres:15
-    container_name: newspaper_api_postgres
+    container_name: newspaper_postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -29,10 +48,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - newspaperapi
+      - newspaper-net
 
 networks:
-  newspaperapi:
+  newspaper-net:
     driver: bridge
 
 volumes:

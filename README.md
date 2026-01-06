@@ -43,6 +43,22 @@ src/
 ...
 ```
 
+## Installation
+
+```docker
+docker-compose up --build -d
+
+docker-compose exec -w /app/apps/api api npx prisma migrate dev
+
+docker-compose exec -w /app/apps/api api npx prisma db push
+
+docker-compose exec -w /app/apps/api api npm run prisma-seed
+
+API: http://localhost:3000
+Web: http://localhost:5173
+Postgres: Port 5432
+```
+
 ## Docker
 
 #### Running containers;
@@ -64,11 +80,11 @@ docker-compose down -v
 #### First run;
 
 ```docker
-docker-compose exec api npx prisma migrate dev
+docker-compose exec -w /app/apps/api api npx prisma migrate dev
 
-docker-compose exec api npx prisma db push
+docker-compose exec -w /app/apps/api api npx prisma db push
 
-docker-compose exec api npm run prisma-seed
+docker-compose exec -w /app/apps/api api npm run prisma-seed
 ```
 
 #### Updating Prisma Client;
@@ -77,7 +93,7 @@ docker-compose exec api npm run prisma-seed
 > If you make changes to the schema, you need to run this command. You must also run the commands in the section below.
 
 ```docker
-docker-compose exec api npm run prisma-generate
+docker-compose exec -w /app/apps/api api npm run prisma-generate
 ```
 
 #### Truncate database and seed;
@@ -86,7 +102,7 @@ docker-compose exec api npm run prisma-generate
 > These commands will truncate the database, push the tables, and seed it again.
 
 ```docker
-docker-compose exec api npx prisma db push --force-reset
+docker-compose exec -w /app/apps/api api npx prisma db push --force-reset
 
-docker-compose exec api npm run prisma-seed
+docker-compose exec -w /app/apps/api api npm run prisma-seed
 ```
