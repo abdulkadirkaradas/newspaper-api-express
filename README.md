@@ -43,7 +43,13 @@ The entire environment (API, Web, Database) is containerized for easy setup.
 docker-compose up --build -d
 ```
 
-### 3. Initialize Database
+### 3. Development Overrides (Optional)
+For local development where you need development-only configurations (like exposing the database to your host machine), use the override file:
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+```
+
+### 4. Initialize Database
 ```bash
 # Run this to setup schema and seed initial data
 docker-compose exec -w /app/apps/api api npx prisma migrate dev
