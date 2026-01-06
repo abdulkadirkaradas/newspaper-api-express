@@ -1,108 +1,62 @@
-# About the Project
+# Newspaper Monorepo 📰
 
-<b>This project concept is an experimental playground that I use during my process of learning new technologies and programming languages.</b>
+<b>This project is an experimental playground for learning new technologies and programming languages.</b>
 
-This API Project and `Web Project` primarily aim to enable people to engage in a series of debates to share their thoughts with each other. The project structure allows people to develop their ideas and thoughts on a foundation (here `news` is designated as the codename) and share them as if they were columns in newspapers, while others can share their own ideas and thoughts in response.
+The Newspaper project is a debate platform where users engage in discussions, share ideas, and develop thoughts on various topics (codenamed `news`). Users can publish their ideas like newspaper columns, and others can respond with their own perspectives.
 
-## Project Structure
+## 🏗️ Project Structure
 
-This project is developed using the FDD (Feature-Driven Development) methodology.
+This project is a monorepo managed with **npm workspaces** and **Turborepo**.
 
-### TechStack
-
-This API project is built using Node.js, Express.js, PostgreSQL, and Prisma. It uses Docker for environment management and JWT for authentication.
-
-**Primarily Technologies:**
-
-- Nodejs
-- ExpressJs
-- PostgreSQL
-- Prisma
-- Docker
-- JWT
-
-### Folder Structure;
-
-```
-src/
- ├── core/
- │   ├── config/
- │   ├── helper/
- │   ├── middleware/
- │   ├── app.ts
- ├── features/
- │   ├── auth/
- │   ├── news/
- │   ├── users/
- │   ├── ...
- ├── routes/
- │   ├── api.ts
- │   ├── web.ts
- ├── index.ts
- ├── server.ts
-...
+```text
+.
+├── apps/
+│   ├── api/          # Express.js backend API
+│   └── web/          # Frontend web application
+├── packages/
+│   └── shared/       # Shared types, schemas, and utilities
+├── docker-compose.yml # Container orchestration
+└── package.json       # Monorepo configuration
 ```
 
-## Installation
+- 🔑 **[API Documentation](file:///d:/Dosyalar/Projects/JSFrameworks/newspaper-api/apps/api/README.md)**: Detailed backend setup and route info.
+- 🌐 **[Web Documentation](file:///d:/Dosyalar/Projects/JSFrameworks/newspaper-api/apps/web/README.md)**: Frontend development guide.
 
-```docker
-docker-compose up --build -d
+## 🚀 Tech Stack
 
-docker-compose exec -w /app/apps/api api npx prisma migrate dev
+- **Monorepo:** Turborepo, npm Workspaces
+- **Backend:** Node.js, Express.js, Prisma, PostgreSQL
+- **Frontend:** *under-consideration*
+- **Shared:** Zod (Validation), TypeScript
+- **Infrastructure:** Docker, Docker Compose
 
-docker-compose exec -w /app/apps/api api npx prisma db push
+## ⚡ Quick Start
 
-docker-compose exec -w /app/apps/api api npm run prisma-seed
+The entire environment (API, Web, Database) is containerized for easy setup.
 
-API: http://localhost:3000
-Web: http://localhost:5173
-Postgres: Port 5432
-```
+### 1. Prerequisites
+- Docker & Docker Compose installed.
+- Configure `.env` files (see sub-project READMEs).
 
-## Docker
-
-#### Running containers;
-
-```docker
+### 2. Launch
+```bash
 docker-compose up --build -d
 ```
 
-#### Remove containers;
-
-`-v` flag will remove volumes as well.
-
-```docker
-docker-compose down -v
-```
-
-## Prisma
-
-#### First run;
-
-```docker
+### 3. Initialize Database
+```bash
+# Run this to setup schema and seed initial data
 docker-compose exec -w /app/apps/api api npx prisma migrate dev
-
-docker-compose exec -w /app/apps/api api npx prisma db push
-
 docker-compose exec -w /app/apps/api api npm run prisma-seed
 ```
 
-#### Updating Prisma Client;
+## 🔗 Services
 
-> [!note]
-> If you make changes to the schema, you need to run this command. You must also run the commands in the section below.
+| Service | URL |
+| :--- | :--- |
+| **API** | [http://localhost:3000](http://localhost:3000) |
+| **Web** | [http://localhost:5173](http://localhost:5173) |
+| **Postgres** | `localhost:5432` |
 
-```docker
-docker-compose exec -w /app/apps/api api npm run prisma-generate
-```
-
-#### Truncate database and seed;
-
-> [!warning]
-> These commands will truncate the database, push the tables, and seed it again.
-
-```docker
-docker-compose exec -w /app/apps/api api npx prisma db push --force-reset
-
-docker-compose exec -w /app/apps/api api npm run prisma-seed
-```
+---
+*Developed with a focus on Feature-Driven Development (FDD) methodology.*
