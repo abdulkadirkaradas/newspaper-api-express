@@ -19,8 +19,8 @@ This project is a monorepo managed with **npm workspaces** and **Turborepo**.
 └── package.json       # Monorepo configuration
 ```
 
-- 🔑 **[API Documentation](file:///d:/Dosyalar/Projects/JSFrameworks/newspaper-api/apps/api/README.md)**: Detailed backend setup and route info.
-- 🌐 **[Web Documentation](file:///d:/Dosyalar/Projects/JSFrameworks/newspaper-api/apps/web/README.md)**: Frontend development guide.
+- 🔑 **[API Documentation](https://github.com/abdulkadirkaradas/newspaper-api-express/blob/develop/apps/api/README.md)**: Detailed backend setup and route info.
+- 🌐 **[Web Documentation](#)**: Frontend development guide.
 
 ## 🚀 Tech Stack
 
@@ -47,6 +47,8 @@ docker-compose up --build -d
 ```bash
 # Run this to setup schema and seed initial data
 docker-compose exec -w /app/apps/api api npx prisma migrate dev
+# Run this to push schema changes(alternative)
+docker-compose exec -w /app/apps/api api npx prisma db push
 docker-compose exec -w /app/apps/api api npm run prisma-seed
 ```
 
