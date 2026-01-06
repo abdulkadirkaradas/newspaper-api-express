@@ -1,0 +1,17 @@
+import { z } from "zod";
+
+export const BadgeCreateRequestSchema = z.object({
+  data: z.object({
+    name: z.string().max(50),
+    description: z.string().max(500),
+    url: z.string().max(128),
+  }),
+});
+
+export const BadgeUpdateRequestSchema = z.object({
+  data: z.object({
+    name: z.string().max(50).optional().nullable(),
+    description: z.string().max(500).optional().nullable(),
+    url: z.string().max(128).optional().nullable(),
+  }),
+});

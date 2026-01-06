@@ -1,0 +1,13 @@
+{
+  "name": "@repo/shared",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./features/*": "./src/features/*.ts"
+  },
+  "dependencies": {
+    "zod": "^4.3.5"
+  }
+}
