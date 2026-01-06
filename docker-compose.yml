@@ -1,4 +1,7 @@
 services:
+  # =========================
+  # API STACK
+  # =========================
   api:
     build:
       context: .
@@ -6,7 +9,7 @@ services:
     container_name: newspaper_api
     restart: always
     ports:
-      - "3000:3000"
+      - "${API_PORT}:3000"
     volumes:
       - .:/app
       - /app/node_modules
@@ -19,21 +22,8 @@ services:
     depends_on:
       - postgres
     networks:
-      - newspaper-net
-
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-    container_name: newspaper_web
-    restart: always
-    ports:
-      - "5173:5173"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    networks:
-      - newspaper-net
+      - public-network
+      - api-internal
 
   postgres:
     image: postgres:15
@@ -43,16 +33,41 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - newspaper-net
+      - api-internal
+
+  # =========================
+  # WEB STACK
+  # =========================
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: newspaper_web
+    restart: always
+    ports:
+      - "${WEB_PORT}:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - public-network
+      - web-internal
 
 networks:
-  newspaper-net:
+  public-network:
     driver: bridge
+
+  api-internal:
+    driver: bridge
+    internal: true
+
+  web-internal:
+    driver: bridge
+    internal: true
 
 volumes:
   postgres_data:
+  redis_data:
