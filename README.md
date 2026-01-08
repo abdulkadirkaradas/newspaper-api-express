@@ -63,7 +63,7 @@ docker-compose exec -w /app/apps/api api npm run prisma-seed
 | Service | URL |
 | :--- | :--- |
 | **API** | [http://localhost:3000](http://localhost:3000) |
-| **Web** | [http://localhost:5173](http://localhost:5173) |
+| **Web** | [http://localhost:3001](http://localhost:3001) |
 | **Postgres** | `localhost:5432` |
 
 ---
