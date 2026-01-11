@@ -8,9 +8,6 @@ COPY packages ./packages
 
 RUN npm install
 
-WORKDIR /app
+EXPOSE 3001
 
-EXPOSE 5173
-
-# Run vite with --host to expose to network
-CMD ["npm", "run", "dev", "--workspace=@repo/web", "--", "--host"]
+CMD ["npm", "run", "dev", "--workspace=@repo/web"]
