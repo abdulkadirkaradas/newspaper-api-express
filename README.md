@@ -6,7 +6,7 @@ The Newspaper project is a debate platform where users engage in discussions, sh
 
 ## 🏗️ Project Structure
 
-This project is a monorepo managed with **npm workspaces** and **Turborepo**.
+This project is a monorepo managed with **npm workspaces** and **Turborepo**, where the API and Web projects are developed using the **FDD (Feature-Driven Development)** methodology.
 
 ```text
 .
@@ -26,7 +26,7 @@ This project is a monorepo managed with **npm workspaces** and **Turborepo**.
 
 - **Monorepo:** Turborepo, npm Workspaces
 - **Backend:** Node.js, Express.js, Prisma, PostgreSQL
-- **Frontend:** *under-consideration*
+- **Frontend:** *under-development*
 - **Shared:** Zod (Validation), TypeScript
 - **Infrastructure:** Docker, Docker Compose
 
