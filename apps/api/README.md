@@ -79,6 +79,24 @@ JWT_SECRET_REFRESH=your_refresh_token_secret
    docker-compose exec -w /app/apps/api api npm run prisma-seed
    ```
 
+3. **Generating JWT Secret Access and Refresh Keys:**<br>
+   Run the following command to generate a secure random key:
+   ```bash
+      node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
+   Copy the generated keys and paste them into the `.env` file.
+
+   > [!Note]
+   > You should generate separate keys for access and refresh tokens.<br>
+   > The generated keys are random and must be kept secure.<br>
+   > If you need to regenerate the keys, run the command again and update the `.env` file.
+
+   **Example `.env` configuration**
+   ```env
+   JWT_SECRET_ACCESS=generated_token_secret_access
+   JWT_SECRET_REFRESH=generated_token_secret_refresh
+   ```
+
 ## 📜 Available Scripts
 
 - `npm run dev`: Starts the development server with `nodemon` and `tsx`.
