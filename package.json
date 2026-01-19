@@ -11,7 +11,7 @@
     "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {
-    "turbo": "^1.10.0"
+    "turbo": "^2.7.5"
   },
   "dependencies": {
     "tailwindcss": "^4.1.18"
