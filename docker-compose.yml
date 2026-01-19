@@ -13,6 +13,8 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/apps/api/node_modules
+      - /app/apps/api/src/generated/prisma
     env_file:
       - .env
       - apps/api/.env
@@ -52,6 +54,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/apps/web/node_modules
     env_file:
       - .env
     environment:
