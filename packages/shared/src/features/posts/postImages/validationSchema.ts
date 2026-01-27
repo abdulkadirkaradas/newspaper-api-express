@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 export const PostImageUploadRequestSchema = z.object({
-  postId: z.string().cuid(),
+  postId: z.cuid(),
 });
 
 export const PostImageFilterSchema = z
   .object({
     filter: z.object({
-      id: z.string().cuid().optional().nullable(),
-      postId: z.string().cuid().optional().nullable(),
+      id: z.cuid().optional().nullable(),
+      postId: z.cuid().optional().nullable(),
     }),
   })
   .refine((data) => data.filter.id || data.filter.postId, {
@@ -20,10 +20,10 @@ export const PostImageDeleteRequestSchema = z.object({
   filter: z
     .object({
       id: z
-        .union([z.string().cuid(), z.array(z.string().cuid())])
+        .union([z.cuid(), z.array(z.cuid())])
         .optional()
         .nullable(),
-      postId: z.string().cuid().optional().nullable(),
+      postId: z.cuid().optional().nullable(),
     })
     .superRefine((data, ctx) => {
       if (!data.id) {

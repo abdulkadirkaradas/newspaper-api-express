@@ -3,8 +3,8 @@ import { z } from "zod";
 export const UserFilterSchema = z.object({
   filter: z
     .object({
-      id: z.string().cuid().optional().nullable(),
-      email: z.string().email().optional().nullable(),
+      id: z.cuid().optional().nullable(),
+      email: z.email().optional().nullable(),
       username: z.string().optional().nullable(),
     })
     .refine((data) => data.id || data.email || data.username, {
