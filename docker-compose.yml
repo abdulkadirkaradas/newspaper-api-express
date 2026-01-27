@@ -21,8 +21,11 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       DATABASE_URL: ${DATABASE_URL}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     depends_on:
       - postgres
+      - redis
     networks:
       - public-network
       - api-internal
@@ -37,6 +40,15 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - api-internal
+
+  redis:
+    image: redis:alpine
+    container_name: newspaper_redis
+    restart: always
+    volumes:
+      - redis_data:/data
     networks:
       - api-internal
 
