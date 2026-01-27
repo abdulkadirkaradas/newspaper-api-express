@@ -18,7 +18,7 @@ export class LoginService {
         email: true,
         password: true,
         emailVerifiedAt: false,
-        roleId: false,
+        roleId: true,
         deleted: false,
         createdAt: true,
         updatedAt: true,
@@ -33,8 +33,16 @@ export class LoginService {
     const refreshToken = generateRefreshToken({ id: user.id });
 
     return {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        lastname: user.lastname,
+        email: user.email,
+        username: user.username,
+        roleId: user.roleId
+      }
     };
   }
 

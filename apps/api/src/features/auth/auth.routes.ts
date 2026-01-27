@@ -12,15 +12,19 @@ const router = Router();
 router.post(
   "/register",
   validateRequest(registerRequestSchema),
-  RegisterController.register
+  RegisterController.register,
 );
-
 // Login Routes
 router.post(
   "/login",
   validateRequest(loginRequestSchema),
-  LoginController.login
+  LoginController.login,
 );
+// Refresh Route
+router.post("/refresh-token", LoginController.refreshToken);
+// Logout Route
+router.post("/logout", LoginController.logout);
+// User Route
 router.get("/me", checkAuthenticate, LoginController.user);
 
 export default router;

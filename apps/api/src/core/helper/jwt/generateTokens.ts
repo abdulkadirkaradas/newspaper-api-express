@@ -18,3 +18,12 @@ export const generateAccessToken = (userInfo: UserPayload) => {
     expiresIn: "15m",
   });
 };
+
+export const verifyRefreshToken = (token: string): UserPayload | null => {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET_REFRESH_TOKEN) as { userId: string };
+    return { id: decoded.userId };
+  } catch (error) {
+    return null;
+  }
+};
