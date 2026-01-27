@@ -1,11 +1,21 @@
+"use client";
+
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shared/components/ui/avatar";
 import { Bell, PlusCircle, Search } from "lucide-react";
+import { useAuth } from "@/shared/context/AuthContext";
+import { WEB_ROUTES } from "@/core/config/routes";
 
 const categories = ["Fun", "Art", "Science", "Misc"];
 
 export function Navbar() {
+  const { user, logout } = useAuth();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
@@ -32,17 +42,35 @@ export function Navbar() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-3">
-          <Button variant="default" size="sm" className="gap-2">
-            <PlusCircle className="h-4 w-4" />
-            Create Post
-          </Button>
-          <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-          </Button>
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
+          {user ? (
+            <>
+              <Button variant="default" size="sm" className="gap-2">
+                <PlusCircle className="h-4 w-4" />
+                Create Post
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Bell className="h-5 w-5" />
+              </Button>
+              <Avatar className="h-8 w-8 cursor-pointer" onClick={logout}>
+                <AvatarImage
+                  src={user.avatar || "/placeholder-avatar.jpg"}
+                  alt={user.username}
+                />
+                <AvatarFallback>
+                  {user.username?.[0]?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" asChild>
+                <a href={WEB_ROUTES.AUTH.LOGIN}>Login</a>
+              </Button>
+              <Button size="sm" asChild>
+                <a href={WEB_ROUTES.AUTH.REGISTER}>Register</a>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </header>
