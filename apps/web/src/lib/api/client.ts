@@ -8,9 +8,14 @@ import {
 } from "@repo/shared/features/auth/register/types";
 import { APIError } from "./error";
 import { API_ROUTES } from "@/core/config/routes";
+import { PostFlowResponse } from "../../../../../packages/shared/src/features/posts/post/types";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL + "/" + process.env.NEXT_PUBLIC_API_SUFFIX;
+  (typeof window === "undefined"
+    ? process.env.INTERNAL_API_URL
+    : process.env.NEXT_PUBLIC_API_URL) +
+  "/" +
+  process.env.NEXT_PUBLIC_API_SUFFIX;
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -61,7 +66,7 @@ export class APIClient {
       });
     }
 
-    const response = await fetch(url.toString(), {
+    const response: Response = await fetch(url.toString(), {
       method,
       headers,
       body: body ? JSON.stringify(body) : undefined,
