@@ -17,4 +17,7 @@ export const API_ROUTES = {
   USER: {
     ME: "auth/me",
   },
+  POSTS: {
+    POST_FLOW: "post/flow",
+  },
 } as const;
