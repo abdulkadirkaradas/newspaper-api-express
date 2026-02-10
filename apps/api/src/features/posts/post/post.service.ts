@@ -1,7 +1,8 @@
 import { prisma } from "@/core/config/database";
-import { Prisma } from "@prisma/client";
 import { ROLE } from "@/core/helper/constants/role.constants";
 import { MESSAGES } from "./constants";
+import { Prisma } from "@prisma/client/extension";
+import { redisService } from "@/core/services/redis.service";
 
 interface Post {
   title: string;
@@ -33,7 +34,84 @@ interface PostVoteParameters {
   value: PostVote;
 }
 
+const PostFilterFetch: object = {
+  author: {
+    select: {
+      id: true,
+      name: true,
+      lastname: true,
+      username: true,
+    },
+  },
+  images: {
+    where: { deleted: false },
+    select: {
+      id: true,
+      fullpath: true,
+    },
+  },
+  category: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+};
+
 export class PostService {
+  private static readonly CACHE_KEY = "cached-posts";
+  private static readonly TTL = 60 * 60 * 6;
+
+  private static async getAllPosts(where: object) {
+    return await prisma.post.findMany({
+      where: where,
+      orderBy: {
+        createdAt: "desc",
+      },
+      omit: {
+        approvedBy: true,
+        removedBy: true,
+      },
+      include: {
+        ...PostFilterFetch,
+        counterPosts: {
+          omit: {
+            approvedBy: true,
+            removedBy: true,
+          },
+          include: {
+            ...PostFilterFetch,
+          },
+        },
+      },
+    });
+  }
+
+  static async postFlow() {
+    try {
+      const cachedPosts = await redisService.get(this.CACHE_KEY);
+
+      if (cachedPosts) {
+        return JSON.parse(cachedPosts);
+      }
+
+      const posts = await this.getAllPosts({ deleted: false });
+
+      if (posts.length > 0) {
+        await this.updatePostCache(posts);
+      }
+
+      return posts;
+    } catch (error) {
+      return await this.getAllPosts({ deleted: false });
+    }
+  }
+
+  private static async updatePostCache(posts: Post[]) {
+    await redisService.del(this.CACHE_KEY);
+    await redisService.set(this.CACHE_KEY, JSON.stringify(posts), this.TTL);
+  }
+
   static async getPost(roleId: number, filter: PostFilter) {
     // Define allowed filter keys based on user role
     const allowedKeys =
@@ -69,57 +147,11 @@ export class PostService {
       };
     }
 
-    prisma;
-    return await prisma.post.findMany({
-      where: where,
-      orderBy: {
-        createdAt: "desc",
-      },
-      omit: {
-        categoryId: true,
-        deleted: true,
-        approvedBy: true,
-        removedBy: true,
-      },
-      include: {
-        category: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        counterPosts: {
-          omit: {
-            approvedBy: true,
-            removedBy: true,
-          },
-          include: {
-            author: {
-              select: {
-                id: true,
-                username: true,
-                name: true,
-                lastname: true,
-              },
-            },
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        },
-        images: {
-          where: { deleted: false },
-          select: {
-            id: true,
-            fullpath: true,
-          },
-        },
-      },
-    });
+    return await this.getAllPosts(where);
   }
 
   static async create(data: Post) {
-    return await prisma.post.create({
+    const post = await prisma.post.create({
       data: {
         title: data.title,
         content: data.content,
@@ -128,18 +160,20 @@ export class PostService {
         authorId: data.authorId,
       },
     });
+    this.updatePostCache(await this.getAllPosts({ deleted: false }));
+    return post;
   }
 
   static async update(
     roleId: number,
     id: string,
-    data: Partial<Omit<Post, "authorId" | "opposedToId">>
+    data: Partial<Omit<Post, "authorId" | "opposedToId">>,
   ) {
     const updateData: Partial<typeof data> = { ...data };
     if (roleId === ROLE.WRITER && updateData.categoryId)
       delete updateData.categoryId;
 
-    return await prisma.post.update({
+    const post = await prisma.post.update({
       where: { id },
       data: {
         title: updateData.title,
@@ -154,16 +188,19 @@ export class PostService {
         updatedAt: true,
       },
     });
+    this.updatePostCache(await this.getAllPosts({ deleted: false }));
+
+    return post;
   }
 
   static async changeStatus(
     authorId: string,
     id: string,
-    status: Partial<PostStatusFilter>
+    status: Partial<PostStatusFilter>,
   ) {
     const data = { ...status, removedBy: status.deleted ? authorId : "" };
 
-    return await prisma.post.update({
+    const post = await prisma.post.update({
       where: { id },
       data,
       select: {
@@ -177,6 +214,9 @@ export class PostService {
         updatedAt: true,
       },
     });
+    this.updatePostCache(await this.getAllPosts({ deleted: false }));
+
+    return post;
   }
 
   static async approve(authorId: string, id: string) {

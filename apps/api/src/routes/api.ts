@@ -19,6 +19,6 @@ router.use("/notifications", [checkAuthenticate], notificationRoutes);
 router.use("/warnings", [checkAuthenticate], warningRoutes);
 router.use("/users", [checkAuthenticate], userRoutes);
 router.use("/post-categories", [checkAuthenticate], postCategoryRoutes);
-router.use("/post", [checkAuthenticate], posts);
+router.use("/post", posts);
 
 export default router;

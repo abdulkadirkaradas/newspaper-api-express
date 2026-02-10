@@ -20,12 +20,19 @@ import {
 const router = Router();
 
 /**
- * Common Post Routes
+ * Public Post Routes
+ */
+router.get("/flow", PostController.postFlow);
+
+router.use(checkAuthenticate);
+
+/**
+ * Authenticated Post Routes
  */
 router.get("/", PostController.getPost);
 router.post(
   "/",
-  [validateRequest(PostCreateRequestSchema)],
+  [checkRole(["Admin", "Moderator", "Writer"]), validateRequest(PostCreateRequestSchema)],
   PostController.createPost
 );
 router.put(
@@ -54,21 +61,20 @@ router.patch(
  */
 router.get(
   "/image",
-  [checkAuthenticate, validateRequest(PostImageFilterSchema)],
+  [validateRequest(PostImageFilterSchema)],
   PostImageController.get
 );
 router.post(
   "/image/:postId",
   [
-    checkAuthenticate,
     fileUploadMiddleware("post_images"),
-    validateRequest(PostImageUploadRequestSchema),
+    validateRequest(PostImageUploadRequestSchema, { route: true}),
   ],
   PostImageController.upload
 );
 router.delete(
   "/image",
-  [checkAuthenticate, validateRequest(PostImageDeleteRequestSchema)],
+  [validateRequest(PostImageDeleteRequestSchema)],
   PostImageController.delete
 );
 

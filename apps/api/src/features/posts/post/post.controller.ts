@@ -5,10 +5,22 @@ import { HTTP_STATUS } from "@/core/helper/constants/http-status.constants";
 import { MESSAGES } from "./constants";
 
 export class PostController {
+  static async postFlow(
+    req: ExtendedRequest,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const posts = await PostService.postFlow();
+      res.status(HTTP_STATUS.OK).json(posts);
+    } catch (error) {
+      next(error);
+    }
+  }
   static async getPost(
     req: ExtendedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { filter } = req.body;
@@ -23,7 +35,7 @@ export class PostController {
   static async createPost(
     req: ExtendedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const data = { ...req.body, authorId: req.user.id };
@@ -40,7 +52,7 @@ export class PostController {
   static async updatePost(
     req: ExtendedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { postId } = req.params;
@@ -59,7 +71,7 @@ export class PostController {
   static async votePost(
     req: ExtendedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { postId } = req.params;
@@ -82,7 +94,7 @@ export class PostController {
   static async changePostStatus(
     req: ExtendedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const authorId = req.user?.id;
@@ -91,7 +103,7 @@ export class PostController {
       const updatedPost = await PostService.changeStatus(
         authorId,
         postId,
-        filter
+        filter,
       );
       res.status(HTTP_STATUS.OK).json({
         message: MESSAGES.RESPONSE.STATUS_CHANGED,
@@ -105,7 +117,7 @@ export class PostController {
   static async approvePost(
     req: ExtendedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const authorId = req.user?.id;
