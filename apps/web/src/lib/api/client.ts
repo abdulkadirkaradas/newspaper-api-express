@@ -179,4 +179,8 @@ export class APIClient {
     }
     this.setAccessToken(null);
   }
+
+  static async fetchPostFlow(): Promise<PostFlowResponse[]> {
+    return this.get(API_ROUTES.POSTS.POST_FLOW);
+  }
 }
