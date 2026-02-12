@@ -67,7 +67,7 @@ router.get(
 router.post(
   "/image/:postId",
   [
-    fileUploadMiddleware("post_images"),
+    fileUploadMiddleware("postImages"),
     validateRequest(PostImageUploadRequestSchema, { route: true}),
   ],
   PostImageController.upload
