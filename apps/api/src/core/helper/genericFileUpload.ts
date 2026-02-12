@@ -21,12 +21,13 @@ export function createMulter(dir: string, ids?: CompoundIds) {
       const mimeType = path.extname(file.originalname);
       const name = path.basename(file.originalname, mimeType);
       const now = new Date();
+      const timestamp = now.toISOString().replace(/:/g, "-");
       const compoundKey =
         ids?.userId !== undefined && ids?.relId !== undefined
           ? `${ids.userId.substring(0, 12)}_${ids.relId.substring(0, 12)}_`
           : "";
 
-      const newFilename = `${now.toISOString()}_${compoundKey}${name}${mimeType}`;
+      const newFilename = `${timestamp}_${compoundKey}${name}${mimeType}`;
       cb(null, newFilename);
     },
   });
