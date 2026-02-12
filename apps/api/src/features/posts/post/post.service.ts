@@ -2,7 +2,8 @@ import { prisma } from "@/core/config/database";
 import { ROLE } from "@/core/helper/constants/role.constants";
 import { MESSAGES } from "./constants";
 import { Prisma } from "@prisma/client/extension";
-import { redisService } from "@/core/services/redis.service";
+import { PostFlowDTOArraySchema } from "@repo/shared/features/posts/post/dtoValidation";
+import { PostCache } from "../utils/post.cache";
 
 interface Post {
   title: string;
@@ -59,9 +60,6 @@ const PostFilterFetch: object = {
 };
 
 export class PostService {
-  private static readonly CACHE_KEY = "cached-posts";
-  private static readonly TTL = 60 * 60 * 6;
-
   private static async getAllPosts(where: object) {
     return await prisma.post.findMany({
       where: where,
@@ -89,7 +87,7 @@ export class PostService {
 
   static async postFlow() {
     try {
-      const cachedPosts = await redisService.get(this.CACHE_KEY);
+      const cachedPosts = await PostCache.getPostCache();
 
       if (cachedPosts) {
         return JSON.parse(cachedPosts);
@@ -98,18 +96,13 @@ export class PostService {
       const posts = await this.getAllPosts({ deleted: false });
 
       if (posts.length > 0) {
-        await this.updatePostCache(posts);
+        await PostCache.updatePostCache(posts);
       }
 
-      return posts;
+      return PostFlowDTOArraySchema.parse(posts);
     } catch (error) {
       return await this.getAllPosts({ deleted: false });
     }
-  }
-
-  private static async updatePostCache(posts: Post[]) {
-    await redisService.del(this.CACHE_KEY);
-    await redisService.set(this.CACHE_KEY, JSON.stringify(posts), this.TTL);
   }
 
   static async getPost(roleId: number, filter: PostFilter) {
@@ -160,7 +153,9 @@ export class PostService {
         authorId: data.authorId,
       },
     });
-    this.updatePostCache(await this.getAllPosts({ deleted: false }));
+    PostCache.updatePostCache(
+      await this.getAllPosts({ deleted: false }),
+    );
     return post;
   }
 
@@ -188,7 +183,9 @@ export class PostService {
         updatedAt: true,
       },
     });
-    this.updatePostCache(await this.getAllPosts({ deleted: false }));
+    PostCache.updatePostCache(
+      await this.getAllPosts({ deleted: false }),
+    );
 
     return post;
   }
@@ -214,7 +211,9 @@ export class PostService {
         updatedAt: true,
       },
     });
-    this.updatePostCache(await this.getAllPosts({ deleted: false }));
+    PostCache.updatePostCache(
+      await this.getAllPosts({ deleted: false }),
+    );
 
     return post;
   }
