@@ -15,6 +15,8 @@ interface PostImageDeleteFilter {
   postId?: string | null;
 }
 
+const API_ORIGIN = process.env.API_ORIGIN ?? "http://localhost:3000";
+
 export class PostImageService {
   static async get(filter: PostImageFilter) {
     let where = { ...filter, deleted: false };
@@ -27,15 +29,20 @@ export class PostImageService {
     return Promise.all(
       images.files.map((file) => {
         const mimeType = path.extname(file.originalname);
+        const normalizedPath = file.path.replace(/\\/g, "/");
+        const publicIndex = normalizedPath.indexOf("/public/");
+        const relativePath = normalizedPath.substring(publicIndex);
+        const fullpath = API_ORIGIN + relativePath;
+
         return prisma.postImage.create({
           data: {
             name: file.filename,
             mimeType: mimeType,
-            fullpath: `/public/uploads/postImages/${file.filename}`,
+            fullpath: fullpath,
             postId: images.postId,
           },
         });
-      })
+      }),
     );
   }
 
