@@ -1,13 +1,6 @@
 import { redisService } from "@/core/services/redis.service";
 import { PostFlowDTOArraySchema } from "@repo/shared/features/posts/post/dtoValidation";
-
-interface Post {
-  title: string;
-  content: string;
-  opposedToId: string | null;
-  categoryId: string | null;
-  authorId: string;
-}
+import { PostFlowResponse as PostFlowDTO } from "@repo/shared/features/posts/post/types";
 
 interface CacheConfig {
   [key: string]: {
@@ -23,7 +16,7 @@ export class PostCache {
     },
   };
 
-  static async updatePostCache(posts: Post[]) {
+  static async updatePostCache(posts: PostFlowDTO[]) {
     const parsedPosts = PostFlowDTOArraySchema.parse(posts);
     await redisService.del(this.CACHE_CONFIG.postCache.key as string);
     await redisService.set(
@@ -38,7 +31,7 @@ export class PostCache {
       this.CACHE_CONFIG.postCache.key as string,
     );
     if (cachedPosts) {
-      return JSON.parse(cachedPosts);
+      return JSON.parse(cachedPosts) as PostFlowDTO[];
     }
     return null;
   }
