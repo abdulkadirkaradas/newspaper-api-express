@@ -3,11 +3,9 @@ export interface PostFlowResponse {
   title: string;
   content: string;
   categoryId: string;
-  score: {
-    score: number;
-    upvotes: number;
-    downvotes: number;
-  };
+  score: number;
+  upvotes: number;
+  downvotes: number;
   createdAt: string;
   author: {
     id: string;
