@@ -86,6 +86,14 @@ export class PostService {
   }
 
   static async postFlow() {
+    const where = {
+      deleted: false,
+      opposedToId: null,
+      approvedBy: {
+        not: "",
+      },
+    };
+
     try {
       const cachedPosts = await PostCache.getPostCache();
 
@@ -93,7 +101,7 @@ export class PostService {
         return JSON.parse(cachedPosts);
       }
 
-      const posts = await this.getAllPosts({ deleted: false });
+      const posts = await this.getAllPosts(where);
 
       if (posts.length > 0) {
         await PostCache.updatePostCache(posts);
@@ -101,7 +109,7 @@ export class PostService {
 
       return PostFlowDTOArraySchema.parse(posts);
     } catch (error) {
-      return await this.getAllPosts({ deleted: false });
+      return await this.getAllPosts(where);
     }
   }
 
@@ -153,9 +161,7 @@ export class PostService {
         authorId: data.authorId,
       },
     });
-    PostCache.updatePostCache(
-      await this.getAllPosts({ deleted: false }),
-    );
+    PostCache.updatePostCache(await this.getAllPosts({ deleted: false }));
     return post;
   }
 
@@ -183,9 +189,7 @@ export class PostService {
         updatedAt: true,
       },
     });
-    PostCache.updatePostCache(
-      await this.getAllPosts({ deleted: false }),
-    );
+    PostCache.updatePostCache(await this.getAllPosts({ deleted: false }));
 
     return post;
   }
@@ -211,9 +215,7 @@ export class PostService {
         updatedAt: true,
       },
     });
-    PostCache.updatePostCache(
-      await this.getAllPosts({ deleted: false }),
-    );
+    PostCache.updatePostCache(await this.getAllPosts({ deleted: false }));
 
     return post;
   }
